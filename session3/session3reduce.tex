@@ -87,27 +87,10 @@ Given the two R object \texttt{m} and \texttt{l} below use
 \end{frame}
 
 
-\begin{frame}[fragile]\frametitle{\texttt{read several files}}
-\begin{verbatim}
-  > files <- dir("../session2/data",full.names = T, 
-+                recursive = T,pattern = "txt$")
-  > files
-  [1] "../session2/data/posttest/post_001.txt"   
-  [2] "../session2/data/posttest/post_002.txt"   
-  [3] "../session2/data/posttest/post_003.txt"   
-  [4] "../session2/data/posttest/post_004.txt"   
-  [5] "../session2/data/posttest/post_005.txt"   
-  [6] "../session2/data/posttest/post_006.txt"   
-  [7] "../session2/data/posttest/post_007.txt"   
-...
-\end{verbatim}
-\end{frame}
-
-
 \begin{frame}[fragile]\frametitle{\texttt{get files names}}
 \begin{verbatim}
   > files <- dir("../session2/data",full.names = T, 
-+                recursive = T,pattern = "txt$")
++                recursive = T,pattern = "[0-9]{3}\\.txt$")
   > files
   [1] "../session2/data/posttest/post_001.txt"   
   [2] "../session2/data/posttest/post_002.txt"   
@@ -159,7 +142,7 @@ Given the two R object \texttt{m} and \texttt{l} below use
 > table(sapply(df.list,class))
 
 data.frame       NULL 
-       192          3   
+       192          2   
 \end{verbatim}
 \end{itemize}
 \end{frame}
@@ -202,8 +185,8 @@ We learned about three basis functions to combine data frame
 \end{frame}
 
 
-\begin{frame}[fragile]\frametitle{\texttt{Reduce()}}
-\begin{verbatim}\tiny
+\begin{frame}[fragile]\frametitle{\texttt{Reduce()}}\tiny
+\begin{verbatim}
 > (d1 <- data.frame(id=LETTERS[c(1,2,3)],day1=sample(10,3)))
   id day1
 1  A    3
@@ -234,11 +217,11 @@ We learned about three basis functions to combine data frame
 \begin{frame}[fragile]\frametitle{\texttt{Reduce()}}
   \begin{itemize}
   \item now we use \texttt{Reduce()} in combination with \texttt{merge()}
-  \begin{exampleblock}{Input/Output}\tiny
+  \begin{exampleblock}{Input/Output}
 \begin{verbatim}
 > Reduce(merge,list(d1,d2,d3,d4))
 [1] id   day1 day2 day3 day4
-<0 Zeilen> (oder row.names mit Länge 0)
+<0 Zeilen> (oder row.names mit L\"ange 0)
 \end{verbatim}
   \end{exampleblock}
 \item and what we get is an empty data frame
@@ -252,7 +235,7 @@ We learned about three basis functions to combine data frame
 
 \begin{frame}[fragile]\frametitle{\texttt{Reduce()}}
   \begin{itemize}
-  \item now we use \texttt{Reduce()} in combination with \texttt{merge()}
+  \item set all to TRUE
   \begin{exampleblock}{Input/Output}\small
 \begin{verbatim}
 > Reduce(function(x,y) { merge(x,y, all=T) },
@@ -511,6 +494,27 @@ data.frame       NULL
 > data$testid <- str_replace(data$Subject,"^.+_","")
 > data$persid <- str_replace(data$Subject,"_.+$","")
 > data$Subject <- NULL
+\end{verbatim}
+\end{exampleblock}
+\end{frame}
+
+
+\begin{frame}[fragile]\frametitle{The \texttt{Subject} column}
+  \begin{itemize}
+  \item now table the personid column
+  \item what is left to do?
+  \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]\frametitle{The \texttt{Subject} column}
+\begin{exampleblock}{Input/Output}\tiny
+\begin{verbatim}
+> table(data$persid)
+
+ 001  002  003  004  005  006  007  008  009  010  011  012  013  014  015  016 
+ 665  662  666  587  608  588  600  654  536  543  600  523  589  669  662  663 
+ 017  018  019  020 CHGU GA3K IJ2K Kj6K  RMK 
+ 604  668  667  656   60   58   58   59   59 
 > data$persid[data$persid=="CHGU"] <- "007"
 \end{verbatim}
     \end{exampleblock}

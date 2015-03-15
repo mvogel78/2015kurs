@@ -472,7 +472,7 @@ The dplyr package makes each of these steps as fast and easy as possible by:
 \end{itemize}
 \end{frame}
 
-\subsection{filter()}
+\subsection{filter(), select() \& arrange()}
 \begin{frame}[fragile]\frametitle{\texttt{filter()}}
   \begin{itemize}
   \item  Base R approach to filtering forces you to repeat the data frame’s name
@@ -511,7 +511,6 @@ The dplyr package makes each of these steps as fast and easy as possible by:
 \end{frame}
 
 
-\subsection{select()}
 \begin{frame}[fragile]\frametitle{\texttt{select()}}
   \begin{itemize}
   \item \texttt{select()} selects colums
@@ -540,7 +539,7 @@ The dplyr package makes each of these steps as fast and easy as possible by:
 \end{verbatim}
 \end{frame}
 
-\subsection{arrange()}
+
 \begin{frame}[fragile]\frametitle{\texttt{arrange()}}
   \begin{itemize}
   \item arrange can be used to change the order of rows
@@ -573,7 +572,7 @@ The dplyr package makes each of these steps as fast and easy as possible by:
 \end{frame}
 
 
-\subsection{mutate() and transmute()}
+\subsection{mutate(), transmute() \& summarise()}
 \begin{frame}[fragile]\frametitle{\texttt{mutate()}}
   \begin{itemize}
   \item \texttt{mutate()} can be used to transform or add columns
@@ -635,7 +634,6 @@ The dplyr package makes each of these steps as fast and easy as possible by:
 \end{verbatim}
 \end{frame}
 
-\subsection{summarise()}
 \begin{frame}[fragile]\frametitle{\texttt{summarise()}}
   \begin{itemize}
   \item \texttt{summarise()} makes summary statistics
@@ -694,9 +692,101 @@ Groups: Subject
 \end{verbatim}
 \end{frame}
 
+\subsection{Exercises}
+\begin{frame}[fragile]\frametitle{dplyr Exercises}
+  \begin{enumerate}
+  \item use \texttt{select()} and \texttt{filter()} in combination ($\%>\%$) to select all rows belonging to the post or the pre test, keep the Subject, Sex, Age\_PRETEST and Stim.Type column. Create a new data frame named data2 or something like this.
+  \item add two new variables containing the counts of hit and incorrect. Use \texttt{mutate()} and \texttt{sum(Stim.Type=='hit')}.
+  \item use \texttt{group\_by()} and \texttt{summarise()} to extract the minimum and maximum TTime per person from the original data frame
+  \item repeat the last exercise, but now group per person and EC1
+  \end{enumerate}
+\end{frame}
 
-\section{ggplot2 - Part 2}
-\subsection{scales and themes}
+
+\begin{frame}[fragile]\frametitle{dplyr Exercises}
+  \begin{itemize}
+  \item use \texttt{select()} and \texttt{filter()} in combination ($\%>\%$) to select all rows belonging to the post or the pre test, keep the Subject, Sex, Age\_PRETEST and Stim.Type column. Create a new data frame named data2 or something like this.
+  \end{itemize}
+\begin{verbatim}
+> data2 <- filter(data, testid %in% c("test1","test2") )%>%
++     select(Subject,Sex,Age_PRETEST,Stim.Type)
+> head(data2)
+  Subject Sex Age_PRETEST Stim.Type
+1       1   f        3.11       hit
+2       1   f        3.11 incorrect
+3       1   f        3.11       hit
+4       1   f        3.11 incorrect
+5       1   f        3.11       hit
+6       1   f        3.11       hit
+\end{verbatim}
+\end{frame}
+
+
+\begin{frame}[fragile]\frametitle{dplyr Exercises}
+  \begin{itemize}
+  \item add two new variables containing the counts of hit and incorrect. Use \texttt{mutate()} and \texttt{sum(Stim.Type=='hit')}
+  \end{itemize}
+\begin{verbatim}
+> data2 <- mutate(data2,n.hit=sum(Stim.Type=='hit'),
++                 n.incorrect=sum(Stim.Type=='incorrect'))
+> head(data2)
+  Subject Sex Age_PRETEST Stim.Type n.hit n.incorrect
+1       1   f        3.11       hit  2561        1223
+2       1   f        3.11 incorrect  2561        1223
+3       1   f        3.11       hit  2561        1223
+4       1   f        3.11 incorrect  2561        1223
+5       1   f        3.11       hit  2561        1223
+6       1   f        3.11       hit  2561        1223
+\end{verbatim}
+\end{frame}
+
+
+\begin{frame}[fragile]\frametitle{dplyr Exercises}
+  \begin{itemize}
+  \item use \texttt{group\_by()} and \texttt{summarise()} to extract the minimum and maximum TTime per person from the original data frame
+  \end{itemize}
+\begin{verbatim}
+> sum.frame <- group_by(data, Subject) %>% 
++     mutate(min.ttime = min(TTime), max.ttime=max(TTime))
+> head(sum.frame[,c(1:3,20:22)])
+Source: local data frame [6 x 6]
+Groups: Subject
+
+  Subject Sex Age_PRETEST EC1 min.ttime max.ttime
+1       1   f        3.11  RO        46     96434
+2       1   f        3.11  RO        46     96434
+3       1   f        3.11  RS        46     96434
+4       1   f        3.11  OF        46     96434
+5       1   f        3.11  AT        46     96434
+6       1   f        3.11  AT        46     96434
+\end{verbatim}
+\end{frame}
+
+
+\begin{frame}[fragile]\frametitle{dplyr Exercises}
+  \begin{itemize}
+  \item repeat the last exercise, but now group per person and EC1
+  \end{itemize}
+\begin{verbatim}
+  > sum.frame <- group_by(data, Subject, EC1) %>% 
+  +     mutate(min.ttime = min(TTime), max.ttime=max(TTime))
+  > head(sum.frame[,c(1:3,20:22)])
+  Source: local data frame [6 x 6]
+  Groups: Subject, EC1
+
+  Subject Sex Age_PRETEST EC1 min.ttime max.ttime
+  1       1   f        3.11  RO       365     30510
+  2       1   f        3.11  RO       365     30510
+  3       1   f        3.11  RS       423     54085
+  4       1   f        3.11  OF       298     58939
+  5       1   f        3.11  AT       272     17344
+  6       1   f        3.11  AT       272     17344
+\end{verbatim}
+\end{frame}
+
+
+\section{ggplot2 Part 2 - scales and themes}
+
 
 \begin{frame}[fragile]\frametitle{Scales}
 What if we want to change the colours?
@@ -709,8 +799,8 @@ What if we want to change the colours?
 \end{itemize}
 \end{frame}
 
-
-\begin{frame}[fragile]\frametitle{Changing a Scale}
+\subsection{Changing a Colour Scale}
+\begin{frame}[fragile]\frametitle{Colour Scales}
   \begin{itemize}
   \item to change our discrete colour scale for the filling we type \footnotesize
 \begin{verbatim}
@@ -752,58 +842,215 @@ There are other ways to customize a discrete colour/fill scales
 \end{verbatim}
 \end{frame}
 
+\subsection{Changing a Continuous Scale}
+\begin{frame}[fragile]\frametitle{Continuous Scales}
+Not only colour scales are modifiable
+\begin{itemize}
+\item here \texttt{scale\_aesthetic\_specification} becomes  \texttt{scale\_x\_continuous()} or  \texttt{scale\_y\_continuous()}
+\item to transform a axis we can use the \texttt{trans} arg
+\end{itemize}
+\end{frame}
 
-\section{stringr}
-%% \subsection{Characteristics}
-%% \begin{frame}\frametitle{\texttt{str\_lenght()}}
-
-%% \end{frame}
-
-
-%% \subsection{Extract/Replace Substrings}
-%% \begin{frame}\frametitle{\texttt{str\_extract()}}
-
-%% \end{frame}
-
-%% \begin{frame}\frametitle{\texttt{str\_sub()}}
-
-%% \end{frame}
-
-%% \begin{frame}\frametitle{\texttt{str\_detect()}}
-
-%% \end{frame}
-
-%% \begin{frame}\frametitle{\texttt{str\_locate()}}
-
-%% \end{frame}
-
-%% \begin{frame}\frametitle{\texttt{str\_trim()}}
-
-%% \end{frame}
-
-%% \begin{frame}\frametitle{\texttt{str\_replace()}}
-
-%% \end{frame}
+\begin{frame}[fragile]\frametitle{Continuous Scales}
+  \begin{itemize}
+  \item we now create a scatter plot with Trial on the x-axis and TTime on the y-axis
+  \item the respective geom is \texttt{geom\_point()}
+  \item if we look at the distribution of the y values we see that they are right skewed
+\begin{verbatim}
+> ggplot(data,aes(x=Trial,y=TTime)) +
++     geom_point()
+> ggsave("ggp11.png")
+\end{verbatim}
+  \end{itemize}
+\begin{center}
+\linkimage{\includegraphics[width=5cm,height=5cm]{ggp11.png}}{ggp11.png}
+\end{center}
+\end{frame}
 
 
-%% \subsection{Other}
-%% \begin{frame}\frametitle{\texttt{str\_dup()}}
+\begin{frame}[fragile]\frametitle{Continuous Scales}
+  \begin{itemize}
+  \item to face the skewness we can transform the y-axis maybe with a square root function
+\begin{verbatim}
+> ggplot(data,aes(x=Trial,y=TTime)) +
++     geom_point() +
++     scale_y_continuous(trans="sqrt")
+> ggsave("ggp12.png")
+\end{verbatim}
+\begin{center}
+\linkimage{\includegraphics[width=5cm,height=5cm]{ggp12.png}}{ggp12.png}
+\end{center}
+\item still a little skewed...
+  \end{itemize}
 
-%% \end{frame}
-
-%% \begin{frame}\frametitle{\texttt{str\_pad()}}
-
-%% \end{frame}
-
-%% \begin{frame}\frametitle{\texttt{str\_c()}}
-
-%% \end{frame}
-
-%% \begin{frame}\frametitle{\texttt{str\_wrap()}}
-
-%% \end{frame}
+\end{frame}
 
 
+\begin{frame}[fragile]\frametitle{Continuous Scales}
+  \begin{itemize}
+  \item ... so maybe we should try $x^{1/3}$
+  \item we first have to write a new transformation
+\begin{verbatim}
+> xt1_3_trans <- function() trans_new("xt1_3", function(x) x**(1/3), function(x) x**3)
+> ggplot(data,aes(x=Trial,y=TTime)) +
++     geom_point() +
++     scale_y_continuous(trans="xt2_3")
+> ggsave("ggp13.png")
+\end{verbatim}
+  \end{itemize}
+\begin{center}
+\linkimage{\includegraphics[width=5cm,height=5cm]{ggp13.png}}{ggp13.png}
+\end{center}
+\end{frame}
+
+
+\begin{frame}[fragile]\frametitle{Continuous Scales}
+For standard transformation there is a short cut:
+\begin{verbatim}
+> ggplot(data,aes(x=Trial,y=TTime)) +
++     geom_point() +
++     scale_y_sqrt()
+\end{verbatim}
+  \begin{itemize}
+  \item \texttt{scale\_x\_log10()}
+  \item \texttt{scale\_x\_reverse()}
+  \item \texttt{scale\_x\_sqrt()}
+  \end{itemize}
+Other transformation available: \small
+\begin{verbatim}
+  ‘asn_trans’, ‘atanh_trans’, ‘boxcox_trans’, ‘date_trans’,
+  ‘exp_trans’, ‘identity_trans’, ‘log10_trans’, ‘log1p_trans’,
+  ‘log2_trans’, ‘log_trans’, ‘logit_trans’, ‘probability_trans’,
+  ‘probit_trans’, ‘reciprocal_trans’, ‘reverse_trans’, ‘sqrt_trans’,
+  ‘time_trans’
+\end{verbatim}
+\end{frame}
+
+
+\subsection{Other Scales}
+\begin{frame}[fragile]\frametitle{Other Scales}
+  \begin{itemize}
+  \item colour scales have also a continuous version (we have seen it in the first bar plot)
+    \begin{itemize}
+    \item \texttt{scale\_colour\_gradient()}
+    \item \texttt{scale\_colour\_gradient2()}
+    \item \texttt{scale\_colour\_gradientn()}
+    \end{itemize}
+  \item \texttt{scale\_linetype\_continuous()} and \texttt{scale\_linetype\_discrete()}
+  \item \texttt{scale\_shape\_continuous()} and \texttt{scale\_shape\_discrete()}
+  \item \texttt{scale\_size\_continuous()} and \texttt{scale\_size\_discrete()}
+  \item \texttt{scale\_x\_date()}
+  \item \texttt{scale\_discrete()}
+  \end{itemize}
+\end{frame}
+
+
+\begin{frame}[fragile]\frametitle{Exercises}
+\begin{enumerate}
+\item Create a scatter plot with Trial on the x-axis and TTime on the y-axis. Map colour to to age column. Looking at the pattern in the graph, is there relation between age and reaction time?
+\item Make a plot which has a facet for each child containing the histogram of TTime, map fill to ..count.. (\texttt{fill=..count..} inside  \texttt{aes()}) 
+\item then add \texttt{scale\_fill\_gradient()} and set its arguments low and high to, say green and red resp. (or make your own choice)
+\item do the same but now do the facetting by testid (and second per Stim.Type level). What can you conclude from these graphs?
+\end{enumerate}
+\end{frame}
+
+
+\begin{frame}[fragile]\frametitle{Exercises}
+  \begin{itemize}
+  \item Create a scatter plot with Trial on the x-axis and TTime on the y-axis. Map colour to to age column. Looking at the pattern in the graph, is there relation between age and reaction time?
+  \end{itemize}
+\begin{verbatim}
+> ggplot(data,aes(x=Trial,y=TTime,colour=Age_PRETEST)) +
++     geom_point() +
++     scale_y_continuous(trans="xt2_3") 
+> ggsave("ggp14.png")
+\end{verbatim}
+\begin{center}
+\linkimage{\includegraphics[width=7cm,height=3cm]{ggp14.png}}{ggp14.png}
+\end{center}
+\end{frame}
+
+
+\begin{frame}[fragile]\frametitle{Exercises}
+  \begin{itemize}
+  \item Make a plot which has a facet for each child containing the histogram of TTime, map fill to ..count.. (\texttt{fill=..count..} inside  \texttt{aes()}) 
+  \end{itemize}
+\begin{verbatim}
+> ggplot(data,aes(x=TTime,fill=..count..)) +
++     geom_histogram(aes(y=..density..)) +
++     facet_wrap(~testid) 
+\end{verbatim}
+\begin{center}
+\linkimage{\includegraphics[width=7cm,height=3cm]{ggp15a.png}}{ggp15a.png}
+\end{center}
+\end{frame}
+
+
+\begin{frame}[fragile]\frametitle{Exercises}
+  \begin{itemize}
+  \item then add \texttt{scale\_fill\_gradient()} and set its arguments low and high to, say green and red resp. (or make your own choice)
+  \end{itemize}
+\begin{verbatim}
+> ggplot(data,aes(x=TTime,fill=..count..)) +
++     geom_histogram(aes(y=..density..)) +
++     facet_wrap(~testid) +
++     scale_fill_gradient(low="forestgreen",
++                         high="firebrick3")
+\end{verbatim}
+\begin{center}
+\linkimage{\includegraphics[width=7cm,height=3cm]{ggp15.png}}{ggp15.png}
+\end{center}
+\end{frame}
+
+
+\begin{frame}[fragile]\frametitle{Exercises}
+  \begin{itemize}
+  \item do the same but now do the facetting by testid (and second per Stim.Type level). What can you conclude from these graphs?
+  \end{itemize}
+\begin{verbatim}
+> ggplot(data,aes(x=TTime,fill=..count..)) +
++     geom_histogram(aes(y=..density..)) +
++     facet_wrap(~testid) +
++     scale_fill_gradient(low="forestgreen",
++                         high="firebrick3")
+\end{verbatim}
+\begin{center}
+\linkimage{\includegraphics[width=7cm,height=3cm]{ggp16.png}}{ggp16.png}
+\end{center}
+\end{frame}
+
+
+
+\begin{frame}[fragile]\frametitle{Exercises}
+  \begin{itemize}
+  \item do the same but now do the facetting by testid (and second per Stim.Type level). What can you conclude from these graphs?
+  \end{itemize}
+\begin{verbatim}
+> ggplot(data,aes(x=TTime,fill=..count..)) +
++     geom_histogram(aes(y=..density..)) +
++     facet_wrap(~Stim.Type) +
++     scale_fill_gradient(low="forestgreen",
++                         high="firebrick3")
+\end{verbatim}
+\begin{center}
+\linkimage{\includegraphics[width=7cm,height=3cm]{ggp17.png}}{ggp17.png}
+\end{center}
+\end{frame}
+
+
+\section{Other Hadley Packages}
+
+
+\subsection{The Hadleyverse}
+\begin{frame}\frametitle{\texttt{Hadleyverse}}
+  \begin{itemize}
+  \item stringr - easy string manipulation
+  \item lubridate - easy date time manipulation
+  \item reshape2, tidyr - data manipulation, melting
+  \item devtools, testthat - package developement
+  \item etc
+  \end{itemize}
+\end{frame}
 
 
 \appendix

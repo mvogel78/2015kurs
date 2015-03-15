@@ -3,15 +3,15 @@ m <- matrix(1:100, nrow=10)
 l <- list(a=1:10,b=rep(c(T,F),2),c=letters)
 
 ## use lapply() to get the class and the length of each element of l (two steps
-lapply(l,class)
-lapply(l,length)
+
+
 
 ## get the maximum of each column in \texttt{m}
-apply(m,2,max)
+
 
 
 ## read in the data files
-files <- dir("../session2/data",full.names = T, recursive = T,pattern = "txt$")
+files <- dir("../session2/data",full.names = T, recursive = T,pattern = "[0-9]{3}\\.txt$")
 
 
 source("function.r")
@@ -55,16 +55,16 @@ ml <- list(vl <- c(TRUE,FALSE),
            vc <- letters)
 
 ## get the class of each of the vectors
-lapply(ml,class)
+
 
 ## coerce them into one vector. Of which class is the resulting vector?
-rv <- Reduce(c,ml)
-class(rv)
+
+
 
 ## Combine all data frames
 ### exercise
 
-data <- Reduce(rbind,df.list)
+
 
 
 
@@ -86,7 +86,7 @@ sub1 <- read.files("../session2/data",
                    skip = 0, recursive = T,pattern="\\002\\.txt$")
 
 ## if you look at the result of table() - what is the problem?
-table(data$Subject)
+
 
 
 ### create two new variables persid and testid using the following line
@@ -106,27 +106,36 @@ data$persid <- str_replace(data$Subject,"_.+$","")
 
 data$Subject <- NULL
 
+## now table the personid column
+## what is left to do?
+
+
+
+
+
 data$persid[data$persid=="CHGU"] <- "007"
-data$persid[data$persid=="RMK"] <- "011"
-data$persid[data$persid=="IJ2K"] <- "017"
-data$persid[data$persid=="GA3K"] <- "004"
-data$persid[data$persid=="Kj6K"] <- "006"
+
+## there are some more wrong person ids: RMK - 011, IJ2K - 017,
+## GA3K - 004, Kj6K - 006. Correct them!
+
+
+
 
 
 
 ## now read in the file subjectsdemographics.txt using the appropriate command
 ## join the demographics with our pre1 data frame (there is a little problem left
-## - compare the persid and Subject columns)
+## - compare the persid and Subject columns) 
 
 
-persdat <- read.table("../session2/data/subjectdemographics.txt",
-                      sep="\t",
-                      header=T)
 
-data$persid <- as.numeric(data$persid)
 
-data <- merge(persdat,data,by.x = "Subject",by.y = "persid",all=T)
-head(data)
+
+
+
+
+
+
 
 
 ## first graph
@@ -227,62 +236,60 @@ p1 + geom_hline(yintercept=1:10) +
 ## column, use the function str_sub() from the stringr package (type ?str_sub
 ## to get help)
 
-load("201503data.rdata")
+tt <- load("201503data.rdata")
 
-data$EC1 <- factor(str_sub(data$Event.Code,1,2))
+
 
 ## now create a plot using ggplot
 ## map the variable EC1 to x and use geom_bar()
 
-ggplot(data,aes(x=EC1)) +
-    geom_bar()
+
+
 
 ggsave("plot1.png")
 
 ## now to the plot again, but add another aesthetic: fill (colour of the filling)
 ## map fill to Stim.Type
 
-ggplot(data,aes(x=EC1,fill=Stim.Type)) +
-    geom_bar()
+
+
 
 ggsave("plot2.png")
 
 ## add the position argument to geom_bar(), set it to "fill"
-ggplot(data,aes(x=EC1,fill=Stim.Type)) +
-    geom_bar(position = "fill")
+
+
 
 ggsave("plot3.png")
 
 ## now add facet_wrap(~testid) to show the same graph per time
 
-ggplot(data,aes(x=EC1,fill=Stim.Type)) +
-    geom_bar(position = "fill") +
-    facet_wrap(~testid)
+
+
+
+
+
 
 ggsave("plot4.png")
 
-ggplot(data,aes(x=EC1,fill=Stim.Type)) +
-    geom_bar(position = "fill") +
-    facet_wrap(~testid,scales = "free")
 
-ggsave("plot4a.png")
 
 
 ## make a graph per child showing stacked hit/incorrect bars
 ## with time on the x axis
 
-ggplot(data,aes(x=testid,fill=Stim.Type)) +
-    geom_bar(position = "fill") +
-    facet_wrap(~ Subject)
+
+
 
 ggsave("plot5.png")
 
 
 ## show the distribution of the variable TTime using geom_boxplot()
 
-ggplot(data,aes(x=testid,fill=Stim.Type, y=TTime)) +
-    geom_boxplot() +
-    facet_wrap(~ Subject)
+
+
+
+
 
 ggsave("plotbp.png")
 
@@ -361,24 +368,29 @@ head(sum.frame)
 ## Sex, Age_PRETEST and Stim.Type column. Create a new data frame named
 ## data2 or something like this.
 
-data2 <- filter(data, testid %in% c("test1","test2") )%>%
-    select(Subject,Sex,Age_PRETEST,Stim.Type)
+
+
+
 
 ## add two new variables containing the counts of hit and incorrect.
 ## Use mutate() and sum(Stim.Type=='hit').
 
-data2 <- mutate(data2,n.hit=sum(Stim.Type=='hit'),
-                n.incorrect=sum(Stim.Type=='incorrect'))
+
+
+
 
 ## use group\_by() and summarise() to extract the minimum and maximum TTime
 ## per person from the original data frame
 
-sum.frame <- group_by(data, Subject) %>% 
-    mutate(min.ttime = min(TTime), max.ttime=max(TTime))
+
+
+
+
 
 ## repeat the last exercise, but now group per person and EC1
-sum.frame <- group_by(data, Subject, EC1) %>% 
-    mutate(min.ttime = min(TTime), max.ttime=max(TTime))
+
+
+
 
 
 ###################################################################################
@@ -443,9 +455,9 @@ ggplot(data,aes(x=Trial,y=TTime)) +
 ## Map colour to to age column. Looking at the pattern in the graph,
 ## is there relation between age and reaction time?
 
-ggplot(data,aes(x=Trial,y=TTime,colour=Age_PRETEST)) +
-    geom_point() +
-    scale_y_continuous(trans="xt2_3") 
+
+
+
 ggsave("ggp14.png")
 
 
@@ -455,39 +467,28 @@ ggsave("ggp14.png")
 ## say green and red resp. (or make your own choice)
 
 
-ggplot(data,aes(x=TTime,fill=..count..)) +
-    geom_histogram() +
-    facet_wrap(~Subject)
-ggsave("ggp15a.png")
 
 
-ggplot(data,aes(x=TTime,fill=..count..)) +
-    geom_histogram() +
-    facet_wrap(~Subject) +
-    scale_fill_gradient(low="forestgreen",high="firebrick3")
-ggsave("ggp15.png")
+
+
+
+
 
 
 ## do the same but now do the facetting by testid
 
-ggplot(data,aes(x=TTime,fill=..count..)) +
-    geom_histogram() +
-    facet_wrap(~testid) +
-    scale_fill_gradient(low="forestgreen",high="firebrick3")
-ggsave("ggp15.png")
 
-ggplot(data,aes(x=TTime,fill=..count..)) +
-    geom_histogram(aes(y=..density..)) +
-    facet_wrap(~testid) +
-    scale_fill_gradient(low="forestgreen",high="firebrick3")
-ggsave("ggp16.png")
+
+
+
+
+
+
 
 ## (and second per Stim.Type level)
 
-ggplot(data,aes(x=TTime,fill=..count..)) +
-    geom_histogram(aes(y=..density..)) +
-    facet_wrap(~Stim.Type) +
-    scale_fill_gradient(low="forestgreen",high="firebrick3")
-ggsave("ggp17.png")
+
+
+
 
 
