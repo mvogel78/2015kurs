@@ -13,7 +13,7 @@ open IN, $filename;
 #open IN, "second/beforetesting.tex";
 #open IN, "start/introduction2.tex";
 
-open IMAGES, ">urls.txt";
+open OUT, ">urls.txt";
 
 $itlevel=0;
 $tablevel=0;
@@ -83,7 +83,7 @@ while(<IN>) {
 	print "== " . $2 . " ==\n";
     }
     if (/includegraphics.*{(.*)}/){
-	my $bild = "second/" . $1;
+	my $bild = "sesssion2/" . $1;
 	my $url1 = $imgur->upload($bild) or die "upload failed";
 	print "<img alt='" . $bild . "' src='". $url1 ."' />\n";
 	print OUT $url1 . "\n";
