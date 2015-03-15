@@ -94,3 +94,4 @@ df.t.test <- function(df,group,col,indcol){
     df.l <- split(df[,c(col,indcol,group)],df[,group])
     Reduce(rbind,lapply(df.l,t.test.helper,col=col,indcol=indcol,group=group))}
 
+
