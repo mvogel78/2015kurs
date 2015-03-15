@@ -76,7 +76,7 @@ read.files <- function(filesdir,skip=3,recursive=F,pattern="."){
     Reduce(rbind,lapply(files,read.file,skip=skip))}
 
 
-data <- read.files("../session2/data",recursive = T,skip=0,pattern = "\\.txt$")
+data <- read.files("../session2/data",recursive = T,skip=0,pattern = "[0-9]{3}\\.txt$")
 
 
 ## read subsets
@@ -226,6 +226,8 @@ p1 + geom_hline(yintercept=1:10) +
 ## create a new variable EC1 containing the first 2 letters of the Event.Code
 ## column, use the function str_sub() from the stringr package (type ?str_sub
 ## to get help)
+
+load("201503data.rdata")
 
 data$EC1 <- factor(str_sub(data$Event.Code,1,2))
 
