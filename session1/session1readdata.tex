@@ -1,0 +1,1036 @@
+% March 2015
+% Autor: Mandy Vogel
+% introduction
+
+\documentclass[xcolor={table},c]{beamer}
+%\usetheme[backgroundimagefile=mathe]{diepen}
+\usetheme{Singapore}
+% \useoutertheme{miniframes}
+
+%\setbeamerfont{block title}{size=\small,series=\bfseries}
+%\setbeamerfont{block body}{size=\footnotesize}
+
+% \usecolortheme{beetle}
+\usepackage{linkimage}
+
+%\usepackage{handoutWithNotes}
+%\pgfpagesuselayout{3 on 1 with notes}[a4paper,border shrink=5mm]
+
+\begin{document}
+
+\title{Introduction}   
+\author{Mandy Vogel} 
+\date{\today}
+
+\AtBeginSection{
+  \begin{frame}<beamer>[allowframebreaks,t]{Table of Contents}
+    \tableofcontents[currentsection]
+  \end{frame}}
+
+\begin{frame}
+\titlepage
+\end{frame}
+
+\begin{frame}[allowframebreaks,t]{Table of Contents}
+\frametitle{Table of Contents}\tableofcontents
+\end{frame}
+
+
+\section{Reading Data}
+\subsection{\texttt{read.table()}}
+\begin{frame}\frametitle{Reading Data}
+The most convenient way of reading data into R is via the function called
+ \texttt{read.table()}. It requires that the data is in "ASCII format", or a "flat file" as
+created with Windows' NotePad or any plain-text editor. The result of   \texttt{read.table()} is a
+data frame.
+
+\vspace*{0.5cm}
+
+It is expected that each line of the data file corresponds to a subject information, that the
+variables are separated by blanks or any other separator symbol (e.g., ",", ";"). The first
+line of the file can contain a header (\texttt{header=T}) giving the names of the variables, which is highly
+recommended!
+\end{frame}
+
+\begin{frame}[fragile]\frametitle{\texttt{read.table()}}
+As an example we read in the data contained in the file \texttt{fishercats.txt} 
+\begin{exampleblock}{Input/Output}\small
+\begin{verbatim}
+> read.table("session1data/fishercats.txt",  
++            sep=" ",header=T)
+  Sex Bwt Hwt
+1   F 2.0 7.0
+2   F 2.0 7.4
+3   F 2.0 9.5
+4   F 2.1 7.2
+5   F 2.1 7.3
+....
+\end{verbatim}
+\end{exampleblock}
+These data correspond to the heart and body weights of samples of male and female cats (R. A. Fisher, 1947).
+\end{frame}
+
+\begin{frame}[fragile]\frametitle{\texttt{read.table()}}
+ The first argument corresponds to the data file, the second to the fields separator  and the third \texttt{header=T} specifies that the first line is a header with variable names. Important: the character variables will be automatically read as factors.
+
+There is a variant for reading data from an url:
+\begin{exampleblock}{Input/Output}\footnotesize
+\begin{verbatim}
+> winer <- read.table( 
++ "http://socserv.socsci.mcmaster.ca/jfox/Courses/R/ICPSR/Winer.txt",
++ header=T)
+\end{verbatim}
+\end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]\frametitle{\texttt{read.table()}}
+There are other variants of \texttt{read.table} function alike :
+\begin{itemize}
+\item \texttt{read.csv()} this function assumes that fields are separated by a comma instead of whites spaces
+\item \texttt{read.csv2()} this function assumes that the separate symbol is the semicolon, but use a comma as the decimal point (some programs, e.g., Microsoft Excel, generate this format when running in European systems)
+\item the function \texttt{scan()} is a powerful, but less friendly, way to read data in R; you may need it, if you want to read files with different numbers ov values per line
+\end{itemize}
+\end{frame}
+
+\subsection{Other Sources}
+
+\begin{frame}[fragile]\frametitle{Reading data from the clipboard}
+With the function \texttt{read.delim()} or also \texttt{read.table()} it is possible to read data directly from the clipboard.
+
+For example mark and copy some columns from an Excel spreadsheet and transfer this content to an R
+by
+\begin{exampleblock}{Input/Output}
+\begin{verbatim}
+ > mydata <- read.delim("clipboard",na.strings=".")
+ > str(mydata) # structure of the data
+\end{verbatim}
+\end{exampleblock}
+\end{frame}
+
+
+\begin{frame}[fragile]\frametitle{The Data Editor}
+To interactively edit a data frame in R you can use the edit function. For example:
+\begin{exampleblock}{Input/Output}
+\begin{verbatim}
+> data(airquality)
+> aq <-edit(airquality)
+\end{verbatim}
+\end{exampleblock}
+This brings up a spreadsheet-like editor with a column for each variable in the data frame.
+ See \texttt{help(airquality)}  for the contents of this data set.
+The function \texttt{edit()} leaves the original data frame unchanged, the changed data frame is assigned to \texttt{aq}. The function \texttt{fix(x)} invokes the function \texttt{edit(x)} on \texttt{x} \textbf{and assign} the new (edited) version of \texttt{x} to \texttt{x}  
+\end{frame}
+
+
+\begin{frame}[fragile]\frametitle{Reading Data from Other Programs}
+You can always use the export function from other (statistical) software to export data from other statistical systems to a tab or comma-delimited file and use the \texttt{read.table()}. However, R has some direct methods. 
+
+The \texttt{foreign} package is one of the "recommended" packages in R. It contains routines to read files from SPSS (\texttt{.sav} format), SAS (export libraries), EpiInfo (.rec), Stata, Minitab, and some S-PLUS version 3 dump files. For example
+\begin{exampleblock}{Input/Output}
+\begin{verbatim}
+> library(foreign)
+> mydata <- read.spss("test.sav", to.data.frame=T)
+\end{verbatim}
+\end{exampleblock}
+read the \texttt{test.sav} SPSS data set and convert it to a data.frame.
+\end{frame}
+
+\begin{frame}[fragile]\frametitle{Reading Data from Excel Files}
+\begin{exampleblock}{Input/Output}
+\small
+\begin{verbatim}
+> library(XLConnect)
+> setwd("/media/TRANSCEND/mpicbs/data/")
+> my.wb <- loadWorkbook("Duncan.xls")
+> sheets <- getSheets(my.wb)
+> content <- readWorksheet(my.wb, sheet=1)
+> head(content)
+        Col0 type income education prestige
+1 accountant prof     62        86       82
+2      pilot prof     72        76       83
+3  architect prof     75        92       90
+4     author prof     55        90       76
+5    chemist prof     64        86       90
+6   minister prof     21        84       87
+> 
+\end{verbatim}
+\end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]\frametitle{Reading Data from Excel Files}
+If someone is really fond of Excel, RExcel (http://rcom.univie.ac.at/download.html) is really worth the effort. There is also a function reading MSAccess files (\texttt{mdb.get()} from the Hmisc package)
+\end{frame}
+
+\begin{frame}\frametitle{Something on Connections}
+The function \texttt{read.table()} opens a connection to a file, read the file, and close the connection. However, for data stored in databases, there exists a number of interface packages on CRAN. 
+
+The RODBC package can set up ODBC connections to data stored by common applications including Excel and Access (for Excel and Access RODBC doesn't work on Unix but it is great for data base connections). There are also more general ways to build connections to data bases.
+
+For up-to-date information on these matters, consult the "R Data Import/Export" manual that comes with the system.
+\end{frame}
+
+
+\subsection{Read Presentation Files}
+\begin{frame}\frametitle{Read Presentation Files}
+  \begin{itemize}
+  \item the presentation files are text files so our choice would be the read table function
+  \item there are arguments to specify the behaviour of the function, here some of them:
+    \begin{itemize}
+    \item first of all \texttt{file} - the name of the which the data are to be read from
+    \item \texttt{header} - logical value indicating whether the file contains the names of the variables as its first line
+    \item \texttt{sep} - the field separator
+    \item \texttt{dec} - character used in the file as decimal point
+    \item \texttt{na.strings} - a character vector of strings interpreted as missing values
+    \end{itemize}
+  \end{itemize}
+\end{frame}
+
+
+\begin{frame}[fragile]\frametitle{Read Presentation Files}
+  \begin{itemize}
+  \item to set the parameters we need to have a look at the file so 
+    \begin{itemize}
+    \item \texttt{file} is the \textit{pre001.txt} in the \texttt{session1data} directory
+    \item there is a header (but not in the first line) so  \texttt{header=T}
+    \item we find the tabulator as separator so \texttt{sep='\textbackslash{}t'} 
+    \item there are no decimal points in the file so we ommit \texttt{dec} 
+    \item at first glance we do not see any obvious missing values 
+    \item because our data starts with the fourth line we use \texttt{skip=3} to skip the first three lines
+    \end{itemize}
+  \item so we have
+\begin{verbatim}
+x <- read.table(file = "session1data/pre001.txt",
+                sep = "\t",
+                header = T,
+                skip = 3)
+\end{verbatim}
+  \end{itemize}
+\end{frame}
+
+
+\begin{frame}[fragile]\frametitle{Read Presentation Files}
+\begin{exampleblock}{Input/Output}\scriptsize
+\begin{verbatim}
+x <- read.table(file = "session1data/pre001.txt",
+                sep = "\t",
+                header = T,
+                skip = 3)
+> head(x)
+  Subject Trial Event.Type     Code   Time  TTime Uncertainty Duration
+1            NA                         NA     NA          NA       NA
+2  PRE001     1   Response        3 104975 114605           1       NA
+3  PRE001     2   Response        3 117581  12411           1       NA
+4  PRE001     4    Picture    B1 T1 125765      0           1     5008
+5  PRE001     5    Picture RO09.jpg 130773      0         391    38181
+6  PRE001     6      Sound RO09.wav 131273      0           2       NA
+  Uncertainty.1 ReqTime ReqDur Stim.Type Pair.Index
+1            NA      NA                          NA
+2            NA      NA                          NA
+3            NA      NA                          NA
+4           392       0   next     other          0
+5           392       0   next     other          0
+6            NA       0            other          0
+\end{verbatim}
+\end{exampleblock}
+\end{frame}
+
+
+\section{Indexing/Subscripting}
+\subsection{Indexing with Integers}
+\begin{frame}[fragile]\frametitle{Indexing with Positive Integers} %%
+\begin{itemize}
+\item there are circumstances where we want to select only some of the elements of a vector/array/dataframe/list
+\item this selection is done using subscripts (also known as indices)
+\item subscripts have square brackets [2] while functions have round brackets (2)
+\item Subscripts on vectors, matrices, arrays and dataframes have one set of square brackets [6], [3,4] or [2,3,2,1]
+\item when a subscript appears as a blank it is understood to mean \emph{all of} thus
+\begin{itemize}
+\item \verb+[,4]+ means all rows in column 4 of an object
+\item \verb+[2,]+ means all columns in row 2 of an object.
+\item subscripts on lists have (usually) double square brackets [[2]] or [[i,j]]
+\end{itemize}
+
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile,allowframebreaks]\frametitle{Indexing with Positive Integers}
+\begin{itemize}
+\item \emph{A vector of positive integers as index}:The index vector can be of any length and the result is of the same length as the index vector. For example,
+\begin{exampleblock}{Input/Output}
+\begin{verbatim}
+> letters[1:3]
+[1] "a" "b" "c"
+> letters[c(1:3,1:3)]
+[1] "a" "b" "c" "a" "b" "c"
+>
+\end{verbatim}
+\end{exampleblock}
+\end{itemize}
+\end{frame}
+
+\subsection{Logical Indexing}
+\begin{frame}[fragile,allowframebreaks]\frametitle{Logical Indexing}
+\begin{itemize}
+\item \emph{A logical vector as index}: Values corresponding to T values in the index vector are selected and those corresponding to F or NA are omitted. For example,
+\begin{exampleblock}{Input/Output}
+\begin{verbatim}
+> x<-c(1,2,3,NA)
+> x[!is.na(x)]
+[1] 1 2 3
+\end{verbatim}
+creates a vector without missing values. Also
+\begin{verbatim}
+> x[is.na(x)] <- 0
+> x
+[1] 1 2 3 0
+\end{verbatim}
+replaces the missing value by zeros.
+\end{exampleblock}
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}[fragile]\frametitle{Logical Indexing} %%
+A common operation is to select rows or columns of data frame that meet some criteria. For example, to select those rows of \texttt{painters} data frame with \texttt{Colour} $\geq$ 17:
+\begin{exampleblock}{Input/Output}
+\begin{verbatim}
+> library(MASS)
+> painters[painters$Colour >= 17,]
+         Composition Drawing Colour Expression School
+Bassano          6       8     17          0      D
+Giorgione        8       9     18          4      D
+Pordenone        8      14     17          5      D
+...
+\end{verbatim}
+\end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]\frametitle{Logical Indexing}
+We may want to select on more than one criterion. We can combine logical indices by the 'and', 'or' and 'not' operators $\mathtt{\&,  | }$ and $\mathtt{!}$. For example,
+\begin{exampleblock}{Input/Output}
+\begin{verbatim}
+> painters[painters$Colour >= 17 & 
+                     painters$Composition > 10, c(1,2,3)]
+          Composition Drawing Colour
+Titian             12      15     18
+Rembrandt          15       6     17
+Rubens             18      13     17
+Van Dyck           15      10     17
+\end{verbatim}
+\end{exampleblock}
+\end{frame}
+
+
+\begin{frame}[fragile]\frametitle{List of Logical Operations}
+    \rowcolors[]{1}{gray!10}{gray!30}
+  \begin{tabular}{@{} >{\ttfamily}l p{7cm}} 
+    \rowcolor{gray!40}
+    \textbf{Operation} & \textbf{Description}\\
+$!$ &        logical NOT                         \\
+$\&$ &       logical AND                         \\
+$|$ &       logical OR                          \\
+$<$ &        less than                           \\
+$<=$ &       less than or equal to               \\
+$>$ &        greater than                        \\
+$>=$ &       greater than or equal to            \\
+$==$ &       logical equals (double =)           \\
+$!=$ &       not equal                           \\
+$\&\&$ &     AND with IF                         \\
+$||$ &       OR with IF                          \\
+xor(x,y) & exclusive OR                        \\
+isTRUE(x) & an abbreviation of identical(TRUE,x)\\
+\end{tabular}
+\end{frame}
+
+
+\begin{frame}[fragile]\frametitle{Logical Indexing}
+If we want to select a subgroup, for example those with schools A, B, and D. We can generate
+ a logical vector using the  $\mathtt{\%in\%}$ operator as follows:
+\begin{exampleblock}{Input/Output}\small
+\begin{verbatim}
+> painters[painters$School %in% c("A","C","D"),]
+Da Udine           10       8     16        3      A
+Da Vinci           15      16      4       14      A
+Del Piombo          8      13     16        7      A
+...
+\end{verbatim}
+\end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]\frametitle{Logical Indexing}
+Sometimes we are interested in the indices of rows satisfying a certain condition. To extract these indices we use the \texttt{which()} command.
+\begin{exampleblock}{Input/Output}\small
+\begin{verbatim}
+> which(painters$School %in% c("A","C","D"))
+ [1]  1  2  3  4  5  6  7  8  9 10 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31
+[26] 32
+\end{verbatim}
+\end{exampleblock}
+\end{frame}
+
+
+\subsection{Indexing with Characters}
+\begin{frame}[fragile]\frametitle{Indexing}
+A vector character strings with variable names can be used to extract those variables relevant for analysis. This is very useful when we have a large number of variables and we need to work with a few ones. For example,
+\begin{exampleblock}{Input/Output}\small
+\begin{verbatim}
+> names(painters)
+[1] "Composition" "Drawing" "Colour" "Expression" "School"
+> painters[1:3,c("Drawing","Expression")]
+           Drawing Expression
+Da Udine         8          3
+Da Vinci        16         14
+Del Piombo      13          7
+\end{verbatim}
+\end{exampleblock}
+\end{frame}
+
+
+
+\begin{frame}[fragile]\frametitle{Indexing with Characters} %%
+\begin{itemize}
+\item \emph{a vector of character strings} could a index on a vector when the vector has names:
+  \begin{exampleblock}{Input/Output}
+\begin{verbatim}
+> x <- c(1:3,NA)
+> names(x)<-letters[1:4]
+> x
+ a  b  c  d
+ 1  2  3 NA
+> x[c("a","c")]
+a c
+1 3
+\end{verbatim}
+  \end{exampleblock}
+\end{itemize}
+\end{frame}
+
+\subsection{Indexing with Negative Indices}
+\begin{frame}[fragile]\frametitle{Trimming Vectors Using Negative Indices} %%
+\begin{itemize}
+\item an extremely useful facility is to use negative indices to drop terms from a vector
+\item suppose we wanted a new vector, z, to contain everything but the first element of x
+  \begin{exampleblock}{Input/Output}
+\begin{verbatim} 
+> x<- c(5,8,6,7,1,5,3)
+> (z <- x[-1])
+[1] 8 6 7 1 5 3
+\end{verbatim}
+  \end{exampleblock}
+\end{itemize}
+\end{frame}
+
+\section{The Apply Family}
+\begin{frame}[fragile]\frametitle{Implicit Loops}
+A common application of loops is  to apply a function to each element of a set of values and
+collect the results in a single structure.
+
+In R this is done by the functions:
+\begin{itemize}
+ \item \texttt{lapply()}
+ \item \texttt{sapply()}
+ \item \texttt{apply()}
+ \item \texttt{tapply()}
+\end{itemize}
+\end{frame}
+
+\subsection{\texttt{lapply()} \& \texttt{sapply()}}
+\begin{frame}[fragile]\frametitle{\texttt{lapply()}}
+\begin{itemize}
+\item The functions \texttt{lapply} and \texttt{sapply} are similar, their first argument can be a list, data frame, matrix or vector, the second argument the function to "apply". The former return a list (hence "l") and the latter tries to simplify the results (hence the "s").  For example:
+\begin{exampleblock}{Input/Output}\small
+\begin{verbatim}
+> lapply(dat,mean)
+$intake.pre
+[1] 6753.636
+
+$intake.post
+[1] 5433.182
+
+> sapply(dat,mean)
+ intake.pre intake.post
+   6753.636    5433.182
+\end{verbatim}
+\end{exampleblock}
+
+\end{itemize}
+\end{frame}
+
+
+\subsection{\texttt{apply()}}
+\begin{frame}[fragile]\frametitle{\texttt{apply()}}
+\begin{itemize}
+\item \texttt{apply()} this function can be applied to an array. Its argument is the array, the second the dimension/s where we want to apply a function and the third is the function. For example
+\begin{exampleblock}{Input/Output}
+\begin{verbatim}
+> x<-1:12
+> dim(x)<-c(2,2,3)
+> apply(x,3,quantile) #calculate the quantiles 
+     [,1] [,2]  [,3]  #for each 2x2 matrix
+0%   1.00 5.00  9.00
+25%  1.75 5.75  9.75
+50%  2.50 6.50 10.50
+75%  3.25 7.25 11.25
+100% 4.00 8.00 12.00
+\end{verbatim}
+\end{exampleblock}
+\end{itemize}
+\end{frame}
+
+\subsection{\texttt{tapply()}}
+\begin{frame}[fragile]\frametitle{\texttt{tapply()}}
+\begin{itemize}
+\item The function \texttt{tapply()} allows you to create tables (hence the "t") of the value of a function on subgroups defined by its second argument, which can be a factor or a list of factors.
+For example in the \texttt{quine} data frame, we can  summarize \texttt{Days} classify by \texttt{Eth} and \texttt{Lrn} as follows:
+\begin{exampleblock}{Input/Output}\small
+\begin{verbatim}
+> tapply(Days,list(Eth,Lrn),mean)
+        AL       SL
+A 18.57500 24.89655
+N 13.25581 10.82353
+>
+\end{verbatim}
+\end{exampleblock}
+\end{itemize}
+\end{frame}
+
+\section{Combining Data Frames}
+\subsection{\texttt{rbind()}}
+\begin{frame}[fragile]\frametitle{\texttt{rbind()}}
+\begin{itemize}
+\item \texttt{rbind()} can be used to combine two dataframes (or matrices) in the sense of adding rows, the column names and types must be the same for the two objects
+  \begin{exampleblock}{Input/Output}\small
+\begin{verbatim}
+> x <- data.frame(id=1:3,score=rnorm(3))
+> y <- data.frame(id=13:15,score=rnorm(3))
+> rbind(x,y)
+  id       score
+1  1  0.71121163
+2  2 -0.62973249
+3  3  1.17737595
+4 13 -0.45074940
+5 14 -0.01044197
+6 15 -1.05217176
+\end{verbatim}
+  \end{exampleblock}
+\end{itemize}
+\end{frame}
+
+\subsection{\texttt{cbind()}}
+\begin{frame}[fragile]\frametitle{\texttt{cbind()}}
+\begin{itemize}
+\item \texttt{cbind()} can be used to combine two dataframes (or matrices) in the sense of adding columns, the number of rows must be the same for the two objects
+  \begin{exampleblock}{Input/Output}\small
+\begin{verbatim}
+> cbind(x,y)
+  id      score1      score2     score3
+1  1  0.11440705  0.14536778 -1.1773241
+2  2 -1.62862651  0.02020604  0.5686415
+3  3  0.05335811  0.25462270  0.8844987
+4  4 -0.19931734  0.15625511  0.9287316
+5  5 -1.15217836 -1.79804503 -0.7550234
+\end{verbatim}
+  \end{exampleblock}
+\item it is not recommended to use \texttt{cbind()} to combining data frames
+\end{itemize}
+\end{frame}
+
+
+\subsection{\texttt{merge()}}
+\begin{frame}[fragile,allowframebreaks]\frametitle{\texttt{merge()}}
+\begin{itemize}
+\item \texttt{merge()} is the command of choice for merging or joining data frames
+\item it is the equivalent of join in sql
+\item there are four cases
+  \begin{itemize}
+  \item inner join
+  \item left outer join
+  \item right outer join
+  \item full outer join
+  \end{itemize}
+\end{itemize}
+  \begin{exampleblock}{Input/Output}\small
+\begin{verbatim}
+> (d1 <- data.frame(id=LETTERS[c(1,2,3)],day1=sample(10,3)))
+  id day1
+1  A    3
+2  B    4
+3  C    5
+> (d2 <- data.frame(id=LETTERS[c(1,3,5,6)],day2=sample(10,4)))
+  id day2
+1  A    7
+2  C   10
+3  E    3
+4  F    6
+\end{verbatim}
+  \end{exampleblock}
+\end{frame}
+
+
+\begin{frame}[fragile]\frametitle{\texttt{inner join}}
+\begin{itemize}
+\item inner join means: keep only the cases present in both of the data frames
+  \begin{exampleblock}{Input/Output}\small
+\begin{verbatim}
+> merge(d1,d2)
+  id day1 day2
+1  A    3    7
+2  C    5   10
+\end{verbatim}
+  \end{exampleblock}
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]\frametitle{\texttt{left outer join}}
+\begin{itemize}
+\item left outer join means: keep all cases of the left data frame no matter if they are present in the right data frame (\texttt{all.x=T})
+  \begin{exampleblock}{Input/Output}\small
+\begin{verbatim}
+> merge(d1,d2,all.x = T)
+  id day1 day2
+1  A    3    7
+2  B    4   NA
+3  C    5   10
+\end{verbatim}
+  \end{exampleblock}
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}[fragile]\frametitle{\texttt{right outer join}}
+\begin{itemize}
+\item right outer join means: keep all cases of the right data frame no matter if they are present in the left data frame (\texttt{all.y=T})
+  \begin{exampleblock}{Input/Output}\small
+\begin{verbatim}
+> merge(d1,d2,all.y = T)
+  id day1 day2
+1  A    3    7
+2  C    5   10
+3  E   NA    3
+4  F   NA    6
+\end{verbatim}
+  \end{exampleblock}
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}[fragile]\frametitle{\texttt{full outer join}}
+\begin{itemize}
+\item full outer join means: keep all cases of both data frames (\texttt{all=T})
+  \begin{exampleblock}{Input/Output}\small
+\begin{verbatim}
+> merge(d1,d2,all = T)
+  id day1 day2
+1  A    3    7
+2  B    4   NA
+3  C    5   10
+4  E   NA    3
+5  F   NA    6
+\end{verbatim}
+  \end{exampleblock}
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]\frametitle{\texttt{merge()}}
+\begin{itemize}
+\item if not stated otherwise R uses the intersect of the names of both data frames, in our case only \textit{id}
+\item you can specify these columns directly by \texttt{by=c("colname1","colname2")} if the columns are named identical or
+\item using\\ \texttt{by.x=c("colname1.x","colname2.x"),
+by.y=c("colname1.y","colname2.y")} if they have different names in the data frames
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}[fragile]\frametitle{\texttt{merge()}}
+\begin{itemize}
+\item now read in the file personendaten.txt using the appropriate command
+\item join the demographics with our pre1 data frame (even though it does not make sense now)
+\end{itemize}
+\end{frame}
+
+
+\subsection{\texttt{Reduce()}}
+\begin{frame}[fragile]\frametitle{\texttt{Reduce()}}
+\begin{itemize}
+\item is a higher order function (functional)
+\item \texttt{Reduce()} uses a binary function (like \texttt{rbind()} or \texttt{merge()}) to combine successively the elements of a given list
+\item it can be used if you have not only two but many data frames
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}[fragile]\frametitle{\texttt{Reduce()}}
+  \begin{itemize}
+  \item first we make up 4 artifical data frames
+  \end{itemize}
+\end{frame}
+
+
+\begin{frame}[fragile]\frametitle{\texttt{Reduce()}}
+  \begin{exampleblock}{Input/Output}\tiny
+\begin{verbatim}
+> (d1 <- data.frame(id=LETTERS[c(1,2,3)],day1=sample(10,3)))
+  id day1
+1  A    3
+2  B    1
+3  C    7
+> (d2 <- data.frame(id=LETTERS[c(1,3,5,6)],day2=sample(10,4)))
+  id day2
+1  A    8
+2  C    2
+3  E    5
+4  F    3
+> (d3 <- data.frame(id=LETTERS[c(2,4:6)],day3=sample(10,4)))
+  id day3
+1  B    8
+2  D    3
+3  E    4
+4  F   10
+> (d4 <- data.frame(id=LETTERS[c(1:5)],day4=sample(10,5)))
+  id day4
+1  A    2
+2  B    7
+3  C    8
+4  D    9
+5  E    1
+\end{verbatim}
+  \end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]\frametitle{\texttt{Reduce()}}
+  \begin{itemize}
+  \item now we use \texttt{Reduce()} in combination with \texttt{merge()}
+  \begin{exampleblock}{Input/Output}\tiny
+\begin{verbatim}
+> Reduce(merge,list(d1,d2,d3,d4))
+[1] id   day1 day2 day3 day4
+<0 Zeilen> (oder row.names mit Länge 0)
+\end{verbatim}
+  \end{exampleblock}
+\item and what we get is an empty data frame
+\item well this isn't exactly what we wanted, so why?
+\item it is because the default behavior of \texttt{merge()} is set \texttt{all=F}, so we get only complete lines which is in this case - none
+\item so we have to define a wrapper function which only change this argument to \texttt{all=T}
+  \end{itemize}
+
+\end{frame}
+
+
+\begin{frame}[fragile]\frametitle{\texttt{Reduce()}}
+  \begin{itemize}
+  \item now we use \texttt{Reduce()} in combination with \texttt{merge()}
+  \begin{exampleblock}{Input/Output}\small
+\begin{verbatim}
+> Reduce(function(x,y) { merge(x,y, all=T) },
++        list(d1,d2,d3,d4))
+  id day1 day2 day3 day4
+1  A    3    8   NA    2
+2  B    1   NA    8    7
+3  C    7    2   NA    8
+4  E   NA    5    4    1
+5  F   NA    3   10   NA
+6  D   NA   NA    3    9
+\end{verbatim}
+  \end{exampleblock}
+\item which is exactly what we want
+  \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]\frametitle{\texttt{Reduce()}}
+  \begin{itemize}
+  \item a second example in combination with \texttt{rbind()}
+  \begin{exampleblock}{Input/Output}\small
+\begin{verbatim}
+> d4$day <- names(d4)[2]
+> names(d4)[2] <- "score"
+> Reduce(function(x,y) { y$day <- names(y)[2]
++                        names(y)[2] <- "score"
++                        rbind(x,y) } ,
++        list(d1,d2,d3), init = d4)
+   id score  day
+1   A     2 day4
+2   B     7 day4
+3   C     8 day4
+4   D     9 day4
+...
+\end{verbatim}
+  \end{exampleblock}
+\item which is exactly what we want
+  \end{itemize}
+\end{frame}
+
+
+
+
+\section{Put it all Together}
+\subsection{The Function}
+\begin{frame}[fragile]\frametitle{The Function}
+  \begin{itemize}
+  \item it would be a tedious work to every step for all of the files
+  \item if we look through the steps the only important thing that we have to change is the file name
+  \item so we rather use a canned version of our procedure dependend the file name - we create a function \texttt{read.file(file)}:
+  \begin{exampleblock}{Input/Output}\scriptsize
+\begin{verbatim}
+read.file <- function(file,skip=0,verbose=T){
+    if(verbose) print(file)
+    tmp <- read.table(file,skip = skip,sep = "\t",header=T,na.strings = c(" +",""))
+    tmp <- tmp[-1,]
+    tmp <- lapply(tmp,function(x) {
+        if( class(x) %in% c("character","factor") ){
+            x <- factor(gsub(" ","",as.character(x)))
+            return(x)}else{ return(x) }})
+    tmp <- as.data.frame(tmp)
+
+\end{verbatim}
+  \end{exampleblock}
+\item which is exactly what we want
+  \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]\frametitle{The Function (continued)}
+  \begin{exampleblock}{Input/Output}\scriptsize
+\begin{verbatim}
+
+    tmp <- tmp[!(tmp$Event.Type %in% c("Pause","Resume")), ]
+    erste <- min(which(!(tmp$Code==3 & !is.na(tmp$Code))))
+    tmp <- tmp[-c(1:erste),]
+
+    letzte <- max(which(tmp$Code==3 & !is.na(tmp$Code)))
+    tmp <- tmp[-c(letzte:nrow(tmp)),]
+
+    zeilen <- which(tmp$Event.Type %in% c("Response"))
+    zeilen <- sort(unique(c(zeilen,zeilen-1)))
+    zeilen <- zeilen[zeilen>0]
+    tmp <- tmp[zeilen,]
+    
+    responses <- which(tmp$Code %in% c(1,2))
+    events <- responses-1
+    tmp$Type <- NA
+    tmp$Type[responses] <- as.character(tmp$Event.Type[events])
+
+\end{verbatim}
+  \end{exampleblock}
+\end{frame}
+
+
+\begin{frame}[fragile]\frametitle{The Function (continued)}
+  \begin{exampleblock}{Input/Output}\scriptsize
+\begin{verbatim}
+
+    if(length(tmp$Type[responses])!=length(tmp$Event.Type[events])) { print(file)}
+    tmp$Event.Code <- NA
+    tmp$Event.Code[responses] <- as.character(tmp$Code[events])
+    tmp$Stim.Type[responses] <- as.character(tmp$Stim.Type[events])
+    tmp$Duration[responses] <- as.character(tmp$Duration[events])
+    tmp$Uncertainty.1[responses] <- as.character(tmp$Uncertainty.1[events])
+    tmp$ReqTime[responses] <- as.character(tmp$ReqTime[events])
+    tmp$ReqDur[responses] <- as.character(tmp$ReqDur[events])
+    tmp$Pair.Index[responses] <- as.character(tmp$Pair.Index[events])
+
+
+    tmp$Stim.Type[responses] <- as.character(tmp$Stim.Type[events])
+    tmp <- tmp[tmp$Event.Type=="Response" & !is.na(tmp$Type),]
+    tmp <- tmp[tmp$Type=="Picture" & !is.na(tmp$Type),]
+    return(tmp)
+}
+\end{verbatim}
+  \end{exampleblock}
+\end{frame}
+
+
+\begin{frame}[fragile]\frametitle{The Function (continued)}
+  \begin{itemize}
+  \item we can use this function now to read in the file 
+  \item and get the processed data frame in one step
+  \end{itemize}
+  \begin{exampleblock}{Input/Output}\tiny
+\begin{verbatim}
+> pre1 <- read.file("session1data/pretest/pre001.txt")
+[1] "session1data/pretest/pre001.txt"
+> head(pre1)
+   Subject Trial Event.Type Code   Time TTime Uncertainty Duration
+7   PRE001     7   Response    2 178963 10009           1    10197
+12  PRE001    12   Response    1 238680  8342           1     8398
+17  PRE001    17   Response    2 297789  8066           1     8198
+22  PRE001    22   Response    1 351321 10811           1    10997
+27  PRE001    27   Response    2 403607   713           1      800
+32  PRE001    32   Response    1 467793 23709           1    23794
+   Uncertainty.1 ReqTime ReqDur Stim.Type Pair.Index    Type Event.Code
+7              2       0   next incorrect          7 Picture   RO09.jpg
+12             2       0   next incorrect         12 Picture   RO20.jpg
+17             2       0   next       hit         17 Picture   RS28.jpg
+22             2       0   next       hit         22 Picture   AT26.jpg
+27             2       0   next       hit         27 Picture   RS23.jpg
+32             2       0   next       hit         32 Picture   OF04.jpg
+
+\end{verbatim}
+  \end{exampleblock}
+\end{frame}
+
+
+\begin{frame}[fragile]\frametitle{The Function 2}
+  \begin{itemize}
+  \item well that's better, but it is still boring to do this for every single file
+  \item so see what we have learned: the combination of \texttt{lapply()} and \texttt{Reduce()} can do the work 
+  \item using \texttt{dir{}} we get all the files contained in a given directory
+  \item then we use \texttt{lapply()} together with our new function \texttt{read.file()}
+  \end{itemize}
+  \begin{exampleblock}{Input/Output}\scriptsize
+\begin{verbatim}
+> filedir <- "session1data/pretest"
+> dir(filedir)
+ [1] "legend.txt" "pre001.txt" "pre002.txt" "pre003.txt" "pre004.txt"
+ [6] "pre005.txt" "pre006.txt" "pre008.txt" "pre009.txt" "pre010.txt"
+[11] "pre011.txt" "pre012.txt" "pre013.txt" "pre014.txt" "pre015.txt"
+[16] "pre016.txt" "pre017.txt" "pre018.txt" "pre019.txt" "pre020.txt"
+\end{verbatim}
+  \end{exampleblock}
+\end{frame}
+
+
+\begin{frame}[fragile]\frametitle{The Function 2}
+  \begin{exampleblock}{Input/Output}\scriptsize
+\begin{verbatim}
+> files <- paste(filedir,dir(filedir),sep = "/")
+> files
+ [1] "session1data/pretest/legend.txt" "session1data/pretest/pre001.txt"
+ [3] "session1data/pretest/pre002.txt" "session1data/pretest/pre003.txt"
+ [5] "session1data/pretest/pre004.txt" "session1data/pretest/pre005.txt"
+ [7] "session1data/pretest/pre006.txt" "session1data/pretest/pre008.txt"
+ [9] "session1data/pretest/pre009.txt" "session1data/pretest/pre010.txt"
+[11] "session1data/pretest/pre011.txt" "session1data/pretest/pre012.txt"
+[13] "session1data/pretest/pre013.txt" "session1data/pretest/pre014.txt"
+[15] "session1data/pretest/pre015.txt" "session1data/pretest/pre016.txt"
+[17] "session1data/pretest/pre017.txt" "session1data/pretest/pre018.txt"
+[19] "session1data/pretest/pre019.txt" "session1data/pretest/pre020.txt"
+\end{verbatim}
+  \end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]\frametitle{The Function 2}
+  \begin{exampleblock}{Input/Output}\footnotesize
+\begin{verbatim}
+> df.list <- lapply(files,read.file,skip=3)
+[1] "read session1data/pretest/legend.txt"
+[1] "read session1data/pretest/pre001.txt"
+[1] "read session1data/pretest/pre002.txt"
+[1] "read session1data/pretest/pre003.txt"
+[1] "read session1data/pretest/pre004.txt"
+[1] "read session1data/pretest/pre005.txt"
+[1] "read session1data/pretest/pre006.txt"
+[1] "read session1data/pretest/pre008.txt"
+[1] "read session1data/pretest/pre009.txt"
+[1] "read session1data/pretest/pre010.txt"
+[1] "read session1data/pretest/pre011.txt"
+[1] "read session1data/pretest/pre012.txt"
+...
+\end{verbatim}
+  \end{exampleblock}
+\end{frame}
+
+
+\begin{frame}[fragile]\frametitle{The Function 2}
+  \begin{itemize}
+  \item the object \texttt{df.list} is a list containing 20 data frames
+    \begin{exampleblock}{Input/Output}\scriptsize
+\begin{verbatim}
+> length(df.list)
+[1] 20
+> sapply(df.list,class)
+ [1] "data.frame" "data.frame" "data.frame" "data.frame" "data.frame"
+ [6] "data.frame" "data.frame" "data.frame" "data.frame" "data.frame"
+[11] "data.frame" "data.frame" "data.frame" "data.frame" "data.frame"
+[16] "data.frame" "data.frame" "data.frame" "data.frame" "data.frame"  
+\end{verbatim}
+    \end{exampleblock}
+  \end{itemize}
+\end{frame}
+
+
+\begin{frame}[fragile]\frametitle{The Function 2}
+  \begin{itemize}
+  \item in a last step we use \texttt{Reduce{}} to combine these 20 data frames
+    \begin{exampleblock}{Input/Output}\scriptsize
+\begin{verbatim}
+> pre <- Reduce(rbind,df.list)
+> nrow(pre)
+[1] 1895
+> table(pre$Subject)
+
+PRE001 PRE002 PRE003 PRE004 PRE005 PRE006 PRE008 PRE009 PRE010 PRE011 PRE012 
+   190     95     96     94     96     95     90     96     95     91     96 
+PRE013 PRE014 PRE015 PRE016 PRE017 PRE018 PRE019 PRE020 
+    95     96     95     91     96     96     96     96 
+\end{verbatim}
+    \end{exampleblock}
+  \end{itemize}
+\end{frame}
+
+
+\begin{frame}[fragile]\frametitle{The Function 2}
+  \begin{itemize}
+  \item we have several directories so it is recommended to build again a function
+    \begin{exampleblock}{Input/Output}\scriptsize
+\begin{verbatim}
+> pre <- Reduce(rbind,df.list)
+> nrow(pre)
+[1] 1895
+> table(pre$Subject)
+
+PRE001 PRE002 PRE003 PRE004 PRE005 PRE006 PRE008 PRE009 PRE010 PRE011 PRE012 
+   190     95     96     94     96     95     90     96     95     91     96 
+PRE013 PRE014 PRE015 PRE016 PRE017 PRE018 PRE019 PRE020 
+    95     96     95     91     96     96     96     96 
+\end{verbatim}
+    \end{exampleblock}
+  \end{itemize}
+\end{frame}
+
+
+
+\begin{frame}[fragile]\frametitle{The Function 2}
+  \begin{itemize}
+  \item we have several directories so it is recommended to build again a function
+    \begin{exampleblock}{Input/Output}\small
+\begin{verbatim}
+> read.files <- function(filesdir,skip=3,...){
++     files <- paste(filedir,dir(filedir),sep="/")
++     Reduce(rbind,lapply(files,read.file,skip=skip))}
+>
+>
+\end{verbatim}
+    \end{exampleblock}
+  \end{itemize}
+\end{frame}
+
+
+\begin{frame}[fragile]\frametitle{The Function 2}
+  \begin{itemize}
+  \item now we have a function dependend on a directory
+  \item and all what we have to do is to call this function
+    \begin{exampleblock}{Input/Output}\scriptsize
+\begin{verbatim}
+> filedir <- "session1data/pretest"
+> pre <- read.files(filedir,skip=3)
+[1] "read session1data/pretest/legend.txt"
+[1] "read session1data/pretest/pre001.txt"
+[1] "read session1data/pretest/pre002.txt"
+...
+[1] "read session1data/pretest/pre018.txt"
+[1] "read session1data/pretest/pre019.txt"
+[1] "read session1data/pretest/pre020.txt"
+> table(pre$Subject)
+
+PRE001 PRE002 PRE003 PRE004 PRE005 PRE006 PRE008 PRE009 PRE010 PRE011 PRE012 
+   190     95     96     94     96     95     90     96     95     91     96 
+PRE013 PRE014 PRE015 PRE016 PRE017 PRE018 PRE019 PRE020 
+    95     96     95     91     96     96     96     96 
+\end{verbatim}
+    \end{exampleblock}
+  \end{itemize}
+\end{frame}
+
+\appendix
+\flushlinkimages
+
+\end{document}

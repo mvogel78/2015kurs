@@ -1,0 +1,876 @@
+\documentclass[12pt]{article}
+\usepackage{geometry}
+\geometry{left=1.2in,top=1in,right=1.2in,bottom=1.5in} %margins
+\parindent0mm
+\parskip2mm
+\begin{document}
+
+\title{Practicals Part 1}
+\author{Mandy Vogel}
+\date{\today}
+\maketitle
+
+\section{Basic Practice with R}
+\subsection{Download and Installation}
+\begin{enumerate}
+\item Download R from CRAN (Comprehensive R Archive Network) and install it in your computer. (if you haven't done it yet)
+\item Download and install RStudio from the RStudio homepage
+\end{enumerate}
+
+\subsection{First Commands}
+\begin{enumerate}
+\item Create a working directory ''MyRcourse''.
+\item Run R and change your working directory to ''MyRcourse''.
+\item Try to use R as a calculator.
+\item  What is greater $e^{\pi}$ or $\pi^{e}$.
+\item Try the graphical demo using \texttt{demo(graphics)} at the commend line.
+\item Look at the objects created by this demo by the function \texttt{ls()}. Please do NOT omit the parenthesis!
+\item Delete same objects with the function \texttt{rm}.
+\item Delete all objects with \texttt{rm(list=ls())}
+\end{enumerate}
+
+\subsection{Help}
+The structure of the html and the text based help differs in some minor aspects. But the main structure is the same. Type
+\begin{verbatim}
+> ?lm
+\end{verbatim}
+Around the top you find the name of the function and its package. It is not that important if you use your local help, but the help pages are also available at the web - so you know which package you have to install.
+
+In the text version follows a line with keywords
+
+The first little paragraph opens the help page with a general description. 
+
+The paragraph \emph{usage} shows you the main arguments of the function together with their defaults. 
+
+It follows a detailed list with the arguments and a description, so you can find possible values and maybe useful options.
+
+The \emph{details} paragraph is full of details ... you won't need it when you are looking for quick help.
+
+The \emph{value} paragraph is very valuable. There you come to know what information your result holds. In the most cases you see just a small part of your result if you just type the command. To have access to everything you have the assign the result like
+\begin{verbatim}
+> my.model <- lm(a~b, data=c)
+\end{verbatim}
+The structure of this result is described in \emph{details}
+
+The next paragraphs hold diverse information e.g. about sources, author, related functions and topics.
+
+At the end you find the \emph{most important} part of the help for beginning - the examples. You can run these examples and learn how the function works...
+
+\begin{enumerate}
+\item go to the help page of the \texttt{lm()} command, what's the function for?
+\item run the example line by line, try to understand what's going on (not every single detail)
+\item add the following lines to visualize the example:
+\begin{verbatim}
+> plot(weight ~ group, col="lavender")
+\end{verbatim}
+\item now run \verb+example(lm)+.
+\end{enumerate}
+
+\subsection{Help}
+Sometimes you cannot remember the precise name of the function, but you know the subject
+on which you want help (e.g. data input in this case). Use the help.search function (without
+a question mark) with your query in double quotes like this:
+\begin{verbatim}
+> help.search("data input")
+\end{verbatim}
+and (with any luck) you will see the names of the R functions associated with this query. Afterwards you can get detailed information by typing \verb+?function+
+
+\texttt{find()} tells you what package something is in:
+\begin{verbatim}
+> find("lm")
+[1] "package:stats"
+\end{verbatim}
+
+and \texttt{apropos()} returns a character vector giving the names of all objects in the search list that match your (potentially partial) enquiry:
+
+\begin{verbatim}
+> apropos("lm")
+ [1] "anova.glm"            "anova.glmlist"        "anovalist.lm"        
+ [4] "anova.lm"             "anova.lmlist"         "anova.mlm"           
+ [7] ".__C__anova.glm"      ".__C__anova.glm.null" ".__C__glm"     
+.....
+\end{verbatim}
+
+Here you find a (of course incomplete) list of books (http://www.r-project.org/doc/bib/R-jabref.html). 
+
+\subsection{Online Help}
+Online Help
+The is a tremendous amount of information about R on the web, but your first port of call is likely to be CRAN at http://cran.r-project.org/ (click on \emph{manuals} on the left)
+
+Here you will find a variety of R manuals:
+\begin{itemize}
+\item \emph{An Introduction to R} gives an introduction to the language and how to use R for doing
+statistical analysis and graphics.
+\item A draft of the \emph{R Language Definition} documents the language per se – that is, the objects
+that it works on, and the details of the expression evaluation process, which are useful
+to know when programming R functions.
+\item \emph{Writing R Extensions} covers how to create your own packages, write R help files, and
+use the foreign language (C, C + +, Fortran,
+) interfaces.
+\item \emph{R Data Import/Export} describes the import and export facilities available either in R
+itself or via packages which are available from CRAN.
+\item \emph{R Installation and Administration}, which is self-explanatory.
+\item \emph{R: A Language and Environment for Statistical Computing} (referred to on the website as
+‘The R Reference Index’) contains all the help files of the R standard and recommended packages in printable form.
+\end{itemize}
+
+\begin{enumerate}
+\item go to rseek.org and "google" \emph{cran task views}.
+\item have a look on these task views (here is the direct link: http://cran.r-project.org/web/views/)
+\item click on something you are interested in: you will find a lot of information and related packages
+\end{enumerate}
+
+\subsection{Look at This!}
+Just to get a feeling what you can do with R -- and as a little break  -- run
+\begin{verbatim}
+> demo(persp)
+> demo(graphics)
+> demo(Hershey)
+> demo(plotmath)
+\end{verbatim}
+
+\subsection{Sequences}
+\begin{enumerate}
+\item Create a vector w with components 1, -1, 2, -2
+\item Display this vector
+\item Obtain a description of w using str()
+\item Create the vector w+1, and display it.
+\item Create the vector v with components (0, 1, 5, 10, 15, ... , 75) using c() and/or seq().
+\item Find the length of this vector.
+\end{enumerate}
+
+
+\subsection{Displaying and changing parts of a vector (indexing)}
+
+First try to understand the following commands:
+\begin{verbatim}
+> x <- c(2, 7, 0, 9, 10, 23, 11, 4, 7, 8, 6, 0)
+> x[4]
+> x[3:5]
+> x[c(1, 5, 8)]
+> x[x > 10]
+> x[(1:6) * 2]
+> x[x == 0] <- 1
+> x
+> ifelse(round(x/2) == x/2, "even", "odd")       
+\end{verbatim}
+
+Now try the following:
+\begin{enumerate}
+\item Display every third element in x
+\item Display elements that are less than 10, but greater than 4
+\item Modify the vector x, replacing by 10 all values that are greater than 10
+\item Modify the vector x, multiplying by 2 all elements that are smaller than 5
+\item Create a new vector y with elements 0,1,0,1, . . . (12 elements) and a vector z that equals x when y=0 and 3x when y=1. (You can do it using ifelse, but there are other possibilities)
+\end{enumerate}
+
+
+Now try the following command lines:
+\begin{verbatim}
+>  n <- 10
+>  g <- gl(n, 100, n * 100)
+>  x <- rnorm(n * 100) + sqrt(as.numeric(g))
+>  boxplot(split(x, g), col = "lavender", notch = TRUE)
+\end{verbatim}
+\begin{enumerate}
+\item Explain what you are doing in each line.
+\item Save your workspace with the name ''Practical01.RData'' and quit R with the function \texttt{q()}.
+\item Restart R by clicking on your workspace (Windows).
+\item Restart R and load your workspace (Linux) (use \texttt{load()}).
+\end{enumerate}
+
+
+\subsection{A bit of matrices}
+
+\begin{enumerate}
+\item Generate a matrix from a vector with values from 1 to 12 (it was an example in the slides). Use the \texttt{matrix()} command together with the \texttt{ncol} argument
+\item Plotting matrices: try the function \texttt{matplot()} with the matrix that you have generated.
+\item Try again \texttt{matplot()}  with options :  \texttt{type=''b''} and \texttt{type=''l''}.
+ What is the difference ?
+\item Generate a vector \texttt{x1} with numbers from 10 to 100 every 10.
+\item Generate a vector \texttt{x2} with the first 10 letters of the alphabet (use capital letters).
+\item Concatenate vectors \texttt{x1} and \texttt{x2}. Explain what was happened?
+\end{enumerate}
+
+
+\subsection{Another Boxplot}
+Generate a data frame \texttt{test} as follows:
+\begin{verbatim}
+> x <- gl(5, 20)
+> y <- rt(100, df=5)
+> test <- data.frame(x,y)
+\end{verbatim}
+Use \texttt{summary()} to summarise this data frame. Make a boxplot of \texttt{y} dependend on \texttt{x}.
+
+\subsection{Indexing in data frames}
+Start with creating a simple data frame:
+\begin{verbatim}
+> mydata <- data.frame(name = c("Joe", "Ann", "Jack", "Tom"), age = c(34,
++ 50, 27, 42), sex = c(1, 2, 1, 1), height = c(185, 170, 175,
++ 182))
+\end{verbatim}
+
+See what happens (and why):
+\begin{verbatim}
+> mydata
+> mydata[[2]]
+> names(mydata)
+> mydata[, "age"]
+> mydata$age
+> mydata[2, 3]
+> mydata[, 2]
+> mydata[1, ]
+\end{verbatim}
+
+Often it is useful to have row names defined as unique subject indicators (or names):
+\begin{verbatim}
+> rownames(mydata) <- mydata$name
+> mydata["Tom", ]
+\end{verbatim}
+
+Note that only values that are unique for each individual can be row (or column) names.
+Now let’s create another data frame with more individuals than the in first one:
+\begin{verbatim}
+> weights <- data.frame(weight = c(67, 81, 56, 90, 72, 79, 69))
+> rownames(weights) <- c("Ann", "Peter", "Sue", "Jack", "Tom", "Joe","Jane")
+> weights[substr(rownames(weights), 1, 1) == "J", ]
+\end{verbatim}
+
+How to add weights to individuals in mydata, using the new data frame?
+\begin{verbatim}
+> mydata$weight <- weights[rownames(mydata), "weight"]
+\end{verbatim}
+
+(There is also the function \texttt{merge()} to join datasets – see \texttt{help(merge)}).
+
+Using the same idea, add the variable height to the dataset weights.
+See what happens with the individuals who are not in mydata.
+
+\subsection{Logical Arithmetic - Logical Indexing}
+Suppose that x is a sequence from 0 to 6 like this:
+\begin{verbatim}
+> x<-0:6
+\end{verbatim}
+Now we can ask questions about the contents of the vector called \texttt{x}. Is \texttt{x} less than 4?
+\begin{verbatim}
+> x < 4
+[1]  TRUE  TRUE  TRUE  TRUE FALSE FALSE FALSE
+\end{verbatim}
+
+Two important logical functions are \texttt{all()} and \texttt{any()}. They check an entire vector but return
+a single logical value
+\begin{verbatim}
+> all(x > 0)
+[1] FALSE
+> any(x == 0)
+[1] TRUE
+\end{verbatim}
+
+\begin{enumerate}
+\item Try \texttt{sum(x>4)}! Try to explain the result!
+\item Define a logical vector \texttt{x} containing three elements \texttt{NA, TRUE, FALSE}. Type now: \texttt{outer(x,x,"\&")} and \texttt{outer(x,x,"$|$")}. Explain the result!  Note the behaviour of NA $|$ NA and NA $|$ FALSE.
+\item Use one of the help functions to find the difference between \texttt{\&} and \texttt{\&\&}
+\item What happens if the subscript vector contains \texttt{NA}s?
+\end{enumerate}
+
+\subsection{Working with “real” data frames}
+
+First remove all objects from the workspace by typing: \texttt{rm(list=ls())} 
+We shall use the \texttt{pima} data which concerns 768 adult female Pima Indians living near Phoenix
+These data are available in the \texttt{faraway} package (if it is not installed yet install it via \texttt{install.packages()}):
+\begin{verbatim}
+> library(faraway)
+> data(pima)
+> objects()
+\end{verbatim}
+The function \texttt{objects()} is a alias for \texttt{ls()} shows what is in your workspace. To find out a bit more about \texttt{pima} try
+\begin{verbatim}
+> help(pima)
+> names(pima)
+> head(pima)
+\end{verbatim}
+
+The dataframe \texttt{parstum} in the \texttt{faraway} package contains data from a study about marijuana and parent alcohol and drug use. 
+\begin{enumerate}
+\item Load these data with
+\begin{verbatim}
+> data(parstum)
+\end{verbatim}
+and print some of the content on the screen.
+\item Check that you now have two objects, \texttt{pima}, and \texttt{parstum} in your work space.
+\item Obtain a description of the object \texttt{parstum}.
+\item Remove the object \texttt{parstum} with the command
+\begin{verbatim}
+> rm(parstum)
+\end{verbatim}
+Check that the object \texttt{parstum} is not any more there.
+\end{enumerate}
+
+
+\subsection{Referencing parts of the data frame (indexing)}
+
+Typing \texttt{pima} will list the entire data frame - not usually very helpful. Now try
+\begin{verbatim}
+> pima[1, "glucose"]
+\end{verbatim}
+This will list the value taken by the first subject for the bweight variable. Alternatively
+\begin{verbatim}
+> pima[1, 2]
+\end{verbatim}
+will list the value taken by the first subject for the second variable (which is bweight). Similarly
+\begin{verbatim}
+> pima[2, "diastolic"]
+\end{verbatim}
+will list the value taken by the second subject for bweight, and so on. To list the data for the
+first 10 subject for the bweight variable, try
+\begin{verbatim}
+> pima[1:10, "bmi"]
+\end{verbatim}
+and to list all the data for this variable, try
+\begin{verbatim}
+> pima[, "bmi"]
+\end{verbatim}
+To list the data for the first subject on all variable except the second try
+\begin{verbatim}
+> pima[1, -2]
+\end{verbatim}
+
+Now
+\begin{enumerate}
+\item Display the data on the variable \texttt{age} for row 7 in the \texttt{pima} data frame.
+\item Display all the data in row 7.
+\item Display the first 10 rows of the data on the variable \texttt{triceps}.
+\end{enumerate}
+
+\subsection{Summaries}
+
+A good way to start an analysis is to ask for a summary of the data by typing
+\begin{verbatim}
+> summary(pima)
+\end{verbatim}
+To see the names of the variables in the data frame try
+\begin{verbatim}
+> names(pima)
+\end{verbatim}
+
+Variables in a data frame can be referred to by name, but to do so it is necessary also to specify
+the name of the data frame. Thus pima\$pregnant refers to the variable \texttt{pregnant} in the \texttt{pima} data frame,
+and typing \texttt{pima\$pregnant} will print the data on this variable. To summarize the variable \texttt{pregnant} try
+\begin{verbatim}
+> summary(pima$pregnant)
+\end{verbatim}
+
+Alternatively you can use
+\begin{verbatim}
+> with(pima, summary(pregnant))
+\end{verbatim}
+In most datasets there will be some missing values. R then codes the missing values using the \texttt{NA} (not available) symbol. The summary shows the number of missing values for each variable.
+
+\subsection{Turning a variable into a factor}
+
+In R categorical variables are known as factors, and the different categories are called the levels of the factor. Variables such as \texttt{test} originally coded using integer codes, and by default R will interpret these codes as numeric values taken by the variables. For R to recognize that the codes refer to categories it is necessary to convert the variables to be factors, and to label the levels. To convert the variable \texttt{test} to be a factor, try
+\begin{verbatim}
+> pima$test <- factor(pima$test)
+> str(pima)
+\end{verbatim}
+Alternatively you can use
+\begin{verbatim}
+> pima <- transform(pima, test = factor(test))
+> str(pima)
+\end{verbatim}
+Note that either way \texttt{test} is now a factor with two levels, labelled "0" and "1" which are the original values taken by the variable. It is possible to change the labels to (say) "negative" and
+"positive" with
+\begin{verbatim}
+> pima$test <- factor(pima$test, labels = c("negative", "positive"))
+> str(pima)
+\end{verbatim}
+or
+\begin{verbatim}
+> pima <- transform(pima, test = factor(test, labels = c("negative",
++ "positive")))
+> str(pima)
+\end{verbatim}
+
+\subsection{Frequency tables}
+
+When starting to look at any new data frame the first step is to check that the values of the variables make sense and correspond to the codes defined in the coding schedule. For categorical
+variables (factors) this can be done by looking at one-way frequency tables and checking that only
+the specified codes (levels) occur. The most useful function for making simple frequency tables is \texttt{table()}. The distribution of the factor \texttt{test} can be viewed using
+\begin{verbatim}
+> with(pima, table(test))
+\end{verbatim}
+or by specifying the data frame as in
+\begin{verbatim}
+> table(pima$test)
+\end{verbatim}
+For simple expressions the choice is a matter of taste, but \texttt{with()} is preferable for more complicated expressions.
+
+\begin{enumerate}
+\item Find the frequency distribution of \texttt{pregnant}
+\item Find the two-way frequency distrubtion of \texttt{test} and \texttt{pregnant}.
+\end{enumerate}
+
+\subsection{Grouping the values of a numeric variable}
+
+For a numeric variable like \texttt{age} it is often useful to group the values and to create a new factor which codes the groups. 
+
+For example we might cut the values taken by matage into the groups
+20--29, 30--39, 40--49, 50--59, 60--69, 70--100 and then create a factor called agegrp with 6 levels corresponding to the four groups. 
+
+The best way of doing this is with the function \texttt{cut()}. Try
+\begin{verbatim}
+> pima <- transform(pima, agegrp = cut(age, breaks = c(20,
++     30, 40, 50, 60, 70, 100), right = FALSE))
+> with(pima, table(agegrp))
+\end{verbatim}
+By default the factor levels are labelled [20-30), [30-40), etc., where [20-30) refers to the interval which includes the left hand end (20) but not the right hand end (30). This is the reason for \texttt{right=FALSE}. When \texttt{right=TRUE} (which is the default) the intervals include the right hand end but not the left hand.
+
+Observations which are not inside the range specified in the \texttt{breaks} part of the command result in missing values for the new factor. You can specify that you want to cut a variable into a
+given number of intervals of equal length by specifying the number of intervals. For example
+\begin{verbatim}
+> pima <- transform(pima, agegrp = cut(age, breaks = 5,
++   right = FALSE))
+> with(pima, table(agegrp))
+\end{verbatim}
+shows 5 intervals of width 12.
+\begin{enumerate}
+\item Summarize the numeric variable \texttt{bmi}, look at the range of values.
+\item note that a \texttt{bmi} of value 0 does not make any sense, originally missing data are coded as zeros; recode these missing values by 
+\begin{verbatim}
+pima$bmi[pima$bmi==0] <- NA
+\end{verbatim}
+\item Create a new factor \texttt{pima\$bmi2} which cuts \texttt{bmi} at 20, 24, 30, 33 including the left hand end, but not the right hand. Make a table of the frequencies for the five levels of \texttt{bmi2} (take care not to produce new NAs).
+\item Create a new factor \texttt{bmi3} which cuts \texttt{bmi} into 5 equal intervals, and make a table of frequencies.
+\end{enumerate}
+
+\subsection{Generating new variables}
+New variables can be produced using assignment together with the usual mathematical operations
+and functions. For example
+\begin{verbatim}
+> loggl <- log(pima$glucose)
+\end{verbatim}
+produces the variable \texttt{loggl} in your work space (Global environment), while
+\begin{verbatim}
+> pima$loggl <- log(pima$glucose)
+\end{verbatim}
+produces the variable \texttt{loggl} in the \texttt{pima} data frame. Logs base 10 are obtained with \texttt{log10()}.
+Logical variables take the values \texttt{TRUE} or \texttt{FALSE}, and behave like factors. New variables can be created which are logical functions of existing variables. For example
+\begin{verbatim}
+> pima$obese <- pima$bmi > 30
+> str(pima)
+\end{verbatim}
+creates a logical variable \texttt{obese} (in \texttt{pima} with levels \texttt{TRUE} and \texttt{FALSE}, according to whether
+\texttt{bmi} is greater than 30 or not. One common use of logical variables is to restrict a command to
+a subset of the data. For example, to create a new dataframe restricted to women with a very height BMI, try
+\begin{verbatim}
+> pima.obese <- subset(pima, bmi > 30)
+> summary(pima.obese)
+\end{verbatim}
+
+\begin{enumerate}
+  \item Add a column with an id number to \texttt{pima}, use \texttt{pima\$id <- rownames(pima)}
+  \item Create a logical variable called \texttt{high.bp} according to whether \texttt{diastolic} is more than 80 or not. Make a frequency table of \texttt{high.bp}.
+  \item Display the id numbers of women with $\mathtt{diastolic} > 80$.
+\end{enumerate}
+
+
+\subsection{Using a text editor with R}
+When working with R it is best to use a text editor to prepare a batch file (or script) which contains R commands and then to run them from the script. You can use the built-in script editor for this, or R Studio, or you can use your favourite text editor instead if you prefer.
+
+One major advantage of running all your R commands from a script is that you end up with a record of exactly what you did which can be repeated at any time. This will also help you redo the analysis in the (highly likely) event that your data changes before you have finished all analyses.
+
+
+\subsection{Working with R}
+When starting R it is always a good idea to use \texttt{getwd()} to print the working directory. You may not be where you think you are! The command \texttt{dir()} can be used to see what files you have in
+the working directory.
+
+When exiting from R you are offered the chance of saving all the objects in your current work space. This is not recommended as the work space can fill up with temporary objects, and it is easy to forget what these are when you resume the session. It is better to build up a script file as you work, and to run this at the start of a new session.
+
+You can save any R object to disc. For example, to save the data frame \texttt{pima} try
+\begin{verbatim}
+> save(pima, file = "pima2.rdata")
+\end{verbatim}
+
+which will save the \texttt{pima} data frame in the file \emph{pima2.rdata}. By default the data frame is saved as a binary file, but the option \texttt{ascii=TRUE} can be used to save it as a text file. To load the object
+from the file use
+
+\begin{verbatim}
+> load("pima2.rdata")
+\end{verbatim}
+
+The commands \texttt{save()} and \texttt{load()} can be used with any R objects, but they are particularly useful when dealing with large data frames.
+
+\subsection{The search path}
+R organizes objects in different positions on a search path. The command
+\begin{verbatim}
+> search()
+\end{verbatim}
+
+shows these positions. The first is the work space, or global environment, the second is the \texttt{faraway} package, the third is a package of commands called \texttt{stats}, the fourth is a package called \texttt{graphics},
+and so on (order can vary). To see what is in the work space try
+
+\begin{verbatim}
+> objects() ## or ls()
+\end{verbatim}
+
+You should see just the object \texttt{pima}. The command \texttt{ls()} does the same as \texttt{objects()}. To see what is in the \texttt{faraway} package, try
+
+\begin{verbatim}
+> objects(2) ## 2 is the position in the search path
+\end{verbatim}
+
+There are more than 100 functions/objects in this package.
+
+When you type the name of an object R looks for it in the order of the search path and will return the first object with this name that it finds. This is why it is best to start your session
+with a clean workspace, otherwise you might have an object in your workspace that masks another one later in the search path.
+
+\subsection{Attaching a Data Frame}
+
+I strongly recommend to \textbf{NOT} to use the attach function. If you carefully read to following sentences you understand why.
+
+The function \texttt{objects()} shows that the data frame pima is in your workspace. To refer to variables in \texttt{pima} by name it is necessary to specify the name of the data frame, as in
+pima\$bmi. 
+
+This is quite cumbersome, and provided you are working primarily with one data frame, it can help to put a copy of the variables from a data frame in their own position on the
+search path. 
+
+This is done with the function
+\begin{verbatim}
+> attach(pima)
+\end{verbatim}
+which places a copy of the variables in the pima data frame in position 2. You can verify this with
+\begin{verbatim}
+> objects(2)
+\end{verbatim}
+which shows the objects in this position are the variables from the pima data frame. 
+
+Note that the \texttt{faraway} package has now been moved up to position 3, as shown by the \texttt{search()} function. When you type the command:
+
+\begin{verbatim}
+> bmi
+\end{verbatim}
+R will look in the first position where it fails to find hyp, then the second position where it finds \texttt{bmi}, which now gets printed.
+
+Although convenient, attaching a data frame can give rise to confusion. For example, when you create a new object from the variables in an attached data frame, as in
+
+\begin{verbatim}
+> subgrp <- age[pregnant == 1]
+\end{verbatim}
+
+the object \texttt{subgrp} will be in your workspace (position 1 on the search path) not in position 2. 
+
+To demonstrate this, try
+\begin{verbatim}
+> objects(1)
+> objects(2)
+\end{verbatim}
+
+Similarly, if you modify the data frame in the workspace the changes will not carry through to the
+attached version of the data frame. The best advice is to regard any operation on an attached
+data frame as temporary, intended only to produce output such as summaries and tabulations.
+
+
+Beware of attaching a data frame more than once - the second attached copy will be attached
+in position 2 of the search path, while the first copy will be moved up to position 3. You can see
+this with
+
+\begin{verbatim}
+> attach(pima)
+> search()
+\end{verbatim}
+
+Having several copies of the same data set can lead to great confusion. To detach a data frame, use the command
+
+\begin{verbatim}
+> detach(pima)
+\end{verbatim}
+
+which will detach the copy in position 2 and move everything else down one position. To detach the second copy repeat the command \texttt{detach(pima)}.
+
+\begin{enumerate}
+\item  Use \texttt{search()} to make sure you have no data frames attached.
+\item  Use \texttt{objects()} to check that you have the data frame \texttt{pima} in your work space.
+\item  Verify that typing \texttt{pima\$age} will print the data on the variable \texttt{age} but typing \texttt{age} will not.
+\item Attach the \texttt{pima} data frame in position 2 and check that the variables from this data frame are now in position 2.
+\item Verify that typing \texttt{age} will now print the data on the the variable \texttt{age}.
+\item Summarize the variable \texttt{bmi} for hypertensive women.
+\end{enumerate}
+
+\section{Reading Data into R}
+\subsection{Introduction}
+It is said that Mrs Beeton, the 19th century cook and writer, began her recipe for rabbit stew with the instruction “First catch your rabbit”. Sadly, the story is untrue, but it does contain an
+important moral. R is a language and environment for data analysis. If you want to do something
+interesting with it, you need data.
+
+For teaching purposes, data sets are often embedded in R packages. The base R distribution contains a whole package dedicated to data which includes around 100 data sets. This is attached
+towards the end of the search path, and you can see its contents with
+
+\begin{verbatim}
+> objects("package:datasets")
+\end{verbatim}
+
+A description of all of these objects is available using the \texttt{help()} function. For example
+\begin{verbatim}
+> help(Titanic)
+\end{verbatim}
+gives an explanation of the Titanic data set, along with references giving the source of the data.
+
+The \texttt{faraway} package also contains some data sets. These are not available automatically when you load the \texttt{faraway} package, but you can make a copy in your workspace using the \texttt{data()} function. For example
+
+\begin{verbatim}
+> library(faraway)
+> data(wheat)
+\end{verbatim}
+
+To go back to the cooking analogy, these data sets are the equivalent of microwave ready meals,
+carefully packaged and requiring minimal work by the consumer. Your own data will never be
+able in this form and you must work harder to read it in to R.
+
+This exercise introduces you to the basics of reading external data into R. It consists of reading
+the same data from different formats. Although this may appear repetitive, it allows you to see
+the many options available to you, and should allow you to recognize when things go wrong.
+You will need the following files in your data directory: \texttt{fem.dat, fem-dot.dat, fem.csv, fem.dta}. (download them them from \emph{https://wiki.init.mpg.de/IT4Science/RstatisTik/RstatisTikPortal/RcourSe}
+
+
+\subsection{Data Sources}
+Sources of data can be classified into three groups:
+\begin{enumerate}
+\item Data in human readable form, which can be inspected with a text editor.
+\item Data in binary format, which can only be read by a program that understands that format
+(SAS, SPSS, Stata, Excel, ...).
+\item Online data from a database management system (DBMS)
+\end{enumerate}
+
+This exercise will deal with the first two forms of data. If you want further details on this topic and also data from DBMSs, you can consult
+the “R Data Import/Export” manual that comes with R.
+
+\subsection{Data in Text Files}
+Human-readable data files are generally kept in a rectangular format, with individual records in
+single rows and variables in columns. Such data can be read into a data frame in R.
+Before reading in the data, you should inspect the file in a text editor and ask three questions:
+\begin{enumerate}
+\item  How are columns in the table separated?
+\item  How are missing values represented?
+\item  Are variable names included in the file?
+\end{enumerate}
+The file \texttt{fem.dat} contains data on 118 female psychiatric patients. The data set contains nine variables.
+
+\begin{center}
+\begin{tabular}{l l}
+ID      & Patient identifier                     \\
+AGE     & Age in years                           \\
+IQ      & Intelligence Quotient (IQ) score       \\
+ANXIETY & Anxiety (1=none, 2=mild, 3=moderate,4=severe)\\
+DEPRESS & Depression (1=none, 2=milde, 3=moderate or severe)\\
+SLEEP   & Sleeping normally (1=yes, 2=no)        \\
+SEX     & Lost interest in sex (1=yes, 2=no)     \\
+LIFE    & Considered suicide (1=yes, 2=no)       \\
+WEIGHT  & Weight change (kg) in previous 6 months\\
+\end{tabular}
+\end{center}
+
+Inspect the file \texttt{fem.dat} with a text editor to answer the questions above.
+The most general function for reading in free-format data is \texttt{read.table()}. This function reads
+a text file and returns a data frame. It tries to guess the correct format of each variable in the
+data frame (integer, double precision, or text).
+Read in the table with:
+
+\begin{verbatim}
+> fem <- read.table("./yourdatadir/fem.dat", header = TRUE)
+\end{verbatim}
+
+Note that you must assign the result of read.table() to an object. If this is not done, the data frame will be printed to the screen and then lost.
+
+You can see the names of the variables with
+
+\begin{verbatim}
+> names(fem)
+\end{verbatim}
+
+The structure of the data frame can be seen with
+
+\begin{verbatim}
+> str(fem)
+\end{verbatim}
+
+You can also inspect the top few rows with
+
+\begin{verbatim}
+> head(fem)
+\end{verbatim}
+
+Note that the IQ of subject 9 is -99, which is an illegal value: nobody can have a negative IQ. In
+fact -99 has been used in this file to represent a missing value. In R the special value NA (“Not
+Available”) is used to represent missing values. All R functions recognize NA values and will
+handle them appropriately, although sometimes the appropriate response is to stop the
+calculation with an error message.
+
+You can recode the missing values with
+
+\begin{verbatim}
+> fem$IQ[fem$IQ == -99] <- NA
+\end{verbatim}
+
+\subsection{Things that Can Go Wrong}
+Sooner or later when reading data into R, you will make a mistake. The frustrating part of reading data into R is that most mistakes are not fatal: they simply cause the function to return a
+data frame that is \emph{not what you wanted}. There are three common mistakes, which you should learn to recognize.
+
+\subsubsection{Forgetting the Headers}
+The first row of the file \texttt{fem.dat} contains the variable names. The \texttt{read.table()} function does
+not assume this by default so you have to specify this with the argument \texttt{header=TRUE}. See what
+happens when you forget to include this option:
+\begin{verbatim}
+> fem2 <- read.table("data/fem.dat")
+> str(fem2)
+> head(fem2)
+\end{verbatim}
+
+and compare the resulting data frame with \texttt{fem}. What are the names of the variables in the data
+frame? What is the class of the variables?
+
+\textbf{Explanation:} Remember that read.table() tries to guess the mode of the variables
+in the text file. Without the header=TRUE option it reads the first row, containing the
+variable names, as data, and guesses that all the variables are character, not numeric.
+By default, all character variables are coerced to factors by read.table. The result is
+a data frame consisting entirely of factors (You can prevent the conversion of
+character variables to factors with the argument as.is=TRUE).
+
+If the variable names are not specified in the file, then they are given default names V1, V2,
+.... You will soon realise this mistake if you try to access a variable in the data frame by, for
+example
+
+\begin{verbatim}
+> fem2$IQ
+\end{verbatim}
+
+as the variable will not exist
+
+There is one case where omitting the \texttt{header=TRUE} option is harmless (apart from the situation where there is no header line, obviously). When the first row of the file contains one less value
+than subsequent lines, \texttt{read.table()} infers that the first row contains the variable names, and the first column of every subsequent row contains its row name.
+
+\subsubsection{Using the Wrong Separator}
+By default, \texttt{read.table()} assumes that data values are separated by any amount of white space.
+Other possibilities can be specified using the \texttt{sep} argument. See what happens when you assume the wrong separator, in this case a tab, which is specified using the escape sequence \verb+\t+
+
+\begin{verbatim}
+> fem3 <- read.table("data/fem.dat", sep = "\t")
+> str(fem3)
+\end{verbatim}
+
+How many variables are there in the data set?
+
+\textbf{Explanation:} If you mis-specify the separator, read.table() reads the whole line as
+a single character variable. Once again, character variables are coerced to factors, so
+you get a data frame with a single factor variable.
+
+\subsubsection{Mis-specifying the Representation of Missing Values}
+The file \texttt{fem-dot.dat} contains a version of the FEM dataset in which all missing values are
+represented with a dot. This is a common way of representing missing values, but is not
+recognized by default by the \texttt{read.table()} function, which assumes that missing values are represented by \texttt{NA}.
+Inspect the file with a text editor, and then see what happens when you read the file in
+incorrectly:
+
+
+\begin{verbatim}
+> fem4 <- read.table("data/fem-dot.dat", header = TRUE)
+> str(fem4)
+\end{verbatim}
+
+You should have enough clues by now to work out what went wrong.
+You can read the data correctly using the \texttt{na.strings} argument
+
+\begin{verbatim}
+> fem4 <- read.table("data/fem-dot.dat", header = TRUE, na.strings = ".")
+\end{verbatim}
+
+\subsection{Spreadsheet Data}
+Spreadsheets have become a common way of exchanging data. All spreadsheet programs can save
+a single sheet in \emph{comma-separated variable (CSV)} format, which can then be read into R. There
+are two functions in R for reading in CSV data: \texttt{read.csv()} and \texttt{read.csv2()}.
+
+To understand why there are two functions, inspect the contents of the function \texttt{read.csv()} by
+typing its name
+
+\begin{verbatim}
+> read.csv
+
+function (file, header = TRUE, sep = ",", quote = "\"", dec = ".",
+fill = TRUE, comment.char = "", ...)
+read.table(file = file, header = header, sep = sep, quote = quote,
+dec = dec, fill = fill, comment.char = comment.char, ...)
+<environment: namespace:utils>
+\end{verbatim}
+
+The first two lines show the arguments to the \texttt{read.csv()} function and their default values
+(\texttt{header=TRUE}, etc) The next two lines show the body of the function, which shows that the
+default arguments are simply passed verbatim onto the \texttt{read.table()} function. Hence
+\texttt{read.csv()} is a wrapper function that chooses the correct arguments for \texttt{read.table()} for you.
+You only need to supply the name of the CSV file and all the other details are taken care of.
+Now inspect the \texttt{read.csv2()} function to find the difference between this function and \texttt{read.csv()}.
+
+\textbf{Explanation:} The CSV format is not a single standard. The file format depends on
+the locale of your computer – the settings that determine how numbers are
+represented. In some countries, the decimal separator is a point “.” and the variable
+separator in a CSV file is a comma “,”. In other countries, the decimal separator is a
+comma “,” and the variable separator is a semi-colon “;”. The \texttt{read.csv()} function is
+used for the first format and the \texttt{read.csv2()} function is used for the second format.
+
+
+The file \texttt{fem.csv} contains the FEM dataset in CSV format. Inspect the file to work out which
+format is used, and read it into R.
+
+On Microsoft Windows, you can copy values directly from an open Excel spreadsheet using the clipboard. Highlight the cells you want to copy in the spread sheet and select copy from the
+pull-down edit menu. 
+
+Then type \texttt{read.table(file="clipboard")} to read the data in. Beware,
+
+however, that the clipboard on Windows operates on the WYSIWYG principle
+(what-you-see-is-what-you-get). If you have a value 1.23456789 in your spreadsheet, but have formatted the cell so it is displayed to two decimal places, then the value read into R will be the
+truncated value 1.23.
+
+\subsection{Binary Data}
+The \texttt{foreign} package allows you to read data in binary formats used by other statistical packages.
+Since R is an open source project, it can only read binary formats that are themselves “open”, in
+the sense that the standards for reading and writing data are well-documented. 
+
+SAS is an important example. R cannot read SAS datasets. However, the SAS XPORT format is well documented and has been adopted as a data interchange format by the US Food and Drug Administration (http://www.sas.com/govedu/fda/faq.html). 
+
+Hence there is a function in the
+\texttt{foreign} package for reading SAS XPORT files.
+
+The file \texttt{fem.dta} contains the FEM dataset in the format used by Stata. Read it into R with
+
+\begin{verbatim}
+> library(foreign)
+> fem5 <- read.dta("data/fem.dta")
+> head(fem5)
+\end{verbatim}
+The Stata data set contains value and variable labels. Stata variables with value labels are
+automatically converted to factors.
+
+There is no equivalent of variable labels in an R data frame, but the original variable labels are
+not lost. They are still attached to the data frame as an invisible attribute, which you can see with
+
+\begin{verbatim}
+> attr(fem5, "var.labels")
+\end{verbatim}
+
+A lot of meta-data is attached to the data in the form of attributes. You can see the whole list of
+attributes with
+
+\begin{verbatim}
+> attributes(fem5)
+\end{verbatim}
+
+or just the attribute names with
+\begin{verbatim}
+> names(attributes(fem5))
+\end{verbatim}
+
+\subsection{Summary}
+In this exercise we have seen how to create a data frame in R from an external text file. We have also reviewed some common mistakes that result in garbled data.
+
+The capabilities of the \texttt{foreign} package for reading binary data have also been demonstrated with a sample \texttt{Stata} data set.
+
+\end{document}
+
