@@ -4,11 +4,12 @@ l <- list(a=1:10,b=rep(c(T,F),2),c=letters)
 
 ## use lapply() to get the class and the length of each element of l (two steps
 
+lapply(l,class)
+lapply(l,length)
 
+## get the maximum of each column in m
 
-## get the maximum of each column in \texttt{m}
-
-
+apply(m,2,max)
 
 ## read in the data files
 files <- dir("../session2/data",full.names = T, recursive = T,pattern = "[0-9]{3}\\.txt$")
@@ -36,12 +37,13 @@ table(sapply(df.list,class))
 
 ### example 1
 Reduce(merge,list(d1,d2,d3,d4))
-Reduce(function(x,y) { merge(x,y, all=T) } ,list(d1,d2,d3,d4))
 
+mymerge <- function(x,y) { merge(x,y, all=T)}
 na.omit(Reduce(function(x,y) { merge(x,y, all=T) } ,list(d1,d2,d3,d4)))
 
-
+Reduce(mymerge ,list(d1,d2,d3,d4))
 ### example 2
+
 d4$day <- names(d4)[2]
 names(d4)[2] <- "score"
 Reduce(function(x,y) { y$day <- names(y)[2]
@@ -59,7 +61,7 @@ ml <- list(vl <- c(TRUE,FALSE),
 
 ## coerce them into one vector. Of which class is the resulting vector?
 
-
+class(Reduce(c,ml))
 
 ## Combine all data frames
 ### exercise
@@ -87,7 +89,7 @@ sub1 <- read.files("../session2/data",
 
 ## if you look at the result of table() - what is the problem?
 
-
+table(data$Subject)
 
 ### create two new variables persid and testid using the following line
 ## look at the resulting column and try to understand
@@ -114,32 +116,32 @@ data$Subject <- NULL
 
 
 data$persid[data$persid=="CHGU"] <- "007"
+data$persid[data$persid=="RMK"] <- "011"
+data$persid[data$persid=="IJ2K"] <- "017"
+data$persid[data$persid=="GA3K"] <- "004"
+data$persid[data$persid=="Kj6K"] <- "006"
+
 
 ## there are some more wrong person ids: RMK - 011, IJ2K - 017,
 ## GA3K - 004, Kj6K - 006. Correct them!
 
-
-
-
-
-
 ## now read in the file subjectsdemographics.txt using the appropriate command
-## join the demographics with our pre1 data frame (there is a little problem left
+## join the demographics with our data data frame (there is a little problem left
 ## - compare the persid and Subject columns) 
 
+persdat <- read.table("../session2/data/subjectdemographics.txt",
+                      sep="\t",
+                      header=T)
+
+data$persid <- as.numeric(data$persid)
 
 
-
-
-
-
-
-
-
+data <- merge(persdat,data,by.x = "Subject", by.y = "persid",all = T)
 
 
 ## first graph
 require(ggplot2)
+
 ggplot(data,aes(x=factor(Subject),fill=..count..)) +
     geom_bar() +
     facet_wrap(~testid)
@@ -163,6 +165,10 @@ table(data$Subject,data$testid)
 ggplot(data,aes(x=factor(Subject),fill=..count..)) +
     geom_bar() +
     facet_wrap(~testid)
+ 
+ggplot(data[data$testid=="test1",],aes(x=factor(Subject), fill=Stim.Type)) +
+    geom_bar() 
+
 
 ###########################################################################
 #########################  graphics #######################################
