@@ -196,7 +196,7 @@ Now let the result be a named vector containing the estimated difference, Z, p a
 \end{verbatim}
 \end{frame}
 
-\begin{frame}\frametitle{Z-test for a population mean (3)} 
+\begin{frame}\frametitle{Z-test for a population mean} 
   \begin{block}{Variants}
     \begin{enumerate}
       \item Z-test for two population means (variances known and equal)
@@ -211,6 +211,50 @@ Now let the result be a named vector containing the estimated difference, Z, p a
     \end{enumerate}
   \end{alertblock}
 \end{frame}
+
+
+\begin{frame}\frametitle{Simulation Exercises} 
+  \begin{enumerate}
+  \item Now sample 100 values from a Normal distribution with mean 10 and standard deviation 2 and use a z-test to compare it against the population mean 10. What is the p-value?
+  \item Now do the sampling and the testing 1000 times, what would be the number of statistically significant results? Use \texttt{replicate()} (which is a wrapper of \texttt{tapply()}) or a \texttt{for()} loop! Record at least the p-values and the estimated differences! Use \texttt{table()} to count the p-vals below 0.05. What type of error do you associate with it? What is the smallest absolute difference with a p-value below 0.05?
+  \item Repeat the simulation above, change the sample size to 1000 in each of the 1000 samples! How many p-values below 0.05? What is now the smallest absolute difference with a p-value below 0.05?
+  \end{enumerate}
+\end{frame}
+
+
+\begin{frame}\frametitle{Simulation Exercises -- Solutions} 
+  \begin{itemize}
+  \item Now sample 100 values from a Normal distribution with mean 10 and standard deviation 2 and use a z-test to compare it against the population mean 10. What is the p-value? What the estimated difference?
+  \end{itemize}
+\begin{verbatim}
+> ztest(rnorm(100,mean=10,sd=2),x.sd=2,mu=10)["pval"]
+  pval 
+0.0441   
+> ztest(rnorm(100,mean=10,sd=2),x.sd=2,mu=10)["diff"]
+   diff 
+-0.0655 
+> ztest(rnorm(100,mean=10,sd=2),x.sd=2,mu=10)[c("pval","diff")]
+  pval   diff 
+0.4515 0.1506 
+\end{verbatim}
+\end{frame}
+
+
+\begin{frame}\frametitle{Simulation Exercises -- Solutions} 
+  \begin{itemize}
+  \item Now do the sampling and the testing 1000 times, what would be the number of statistically significant results? Use \texttt{replicate()} (which is a wrapper of \texttt{tapply()}) or a \texttt{for()} loop! Record at least the p-values and the estimated differences! Transform the result into a data frame
+  \end{itemize}
+\begin{verbatim}
+
+\end{verbatim}
+\end{frame}
+
+\begin{frame}\frametitle{Simulation Exercises -- Solutions} 
+\begin{itemize}
+\item Use \texttt{table()} to count the p-vals below 0.05. What type of error do you associate with it? What is the smallest absolute difference with a p-value below 0.05?
+\end{itemize}
+\end{frame}
+
 
 \section{t-Tests}
 \subsection{One Sample t-test}
