@@ -5,6 +5,7 @@
 \usetheme{Singapore}
 
 %% \usepackage{listings}
+\usepackage{linkimage}
 
 \begin{document}
 
@@ -22,45 +23,45 @@
 \end{frame}
 
 \section{Preliminaries}
-\subsection{Classifaction of tests}
-\begin{frame}\frametitle{Tests}
-  \begin{columns}
-    \begin{column}{0.7\textwidth}
-      \begin{itemize}
-      \item<1->\textbf{Parametric classical tests}
-        \begin{itemize}
-        \item<4-> for central tendency
-        \item<5-> for proportion
-        \item<6-> for variability
-        \item<7-> for distribution functions
-        \item<8-> for association
-        \end{itemize}
-      \item<2->\textbf{Distribution-free tests}
-        \begin{itemize}
-        \item<4-> for central tendency
-        \item<6-> for variability
-        \item<7-> for distribution functions
-        \item<8-> for association
-        \end{itemize}
-      \item<3->\textbf{Sequential tests}
-        \begin{itemize}
-        \item<4-> for central tendency
-        \item<5-> for proportion
-        \item<6-> for variability
-        \end{itemize}
-      \end{itemize}
-    \end{column}
-    \onslide<9->
-    \begin{column}{0.3\textwidth}
-      In each case:
-      \begin{itemize}
-        \item[]<9-> 1 sample
-        \item[]<9-> 2 samples
-        \item[]<9-> $k$ samples
-      \end{itemize}
-    \end{column}
-  \end{columns}
-\end{frame}
+%% \subsection{Classifaction of tests}
+%% \begin{frame}\frametitle{Tests}
+%%   \begin{columns}
+%%     \begin{column}{0.7\textwidth}
+%%       \begin{itemize}
+%%       \item<1->\textbf{Parametric classical tests}
+%%         \begin{itemize}
+%%         \item<4-> for central tendency
+%%         \item<5-> for proportion
+%%         \item<6-> for variability
+%%         \item<7-> for distribution functions
+%%         \item<8-> for association
+%%         \end{itemize}
+%%       \item<2->\textbf{Distribution-free tests}
+%%         \begin{itemize}
+%%         \item<4-> for central tendency
+%%         \item<6-> for variability
+%%         \item<7-> for distribution functions
+%%         \item<8-> for association
+%%         \end{itemize}
+%%       \item<3->\textbf{Sequential tests}
+%%         \begin{itemize}
+%%         \item<4-> for central tendency
+%%         \item<5-> for proportion
+%%         \item<6-> for variability
+%%         \end{itemize}
+%%       \end{itemize}
+%%     \end{column}
+%%     \onslide<9->
+%%     \begin{column}{0.3\textwidth}
+%%       In each case:
+%%       \begin{itemize}
+%%         \item[]<9-> 1 sample
+%%         \item[]<9-> 2 samples
+%%         \item[]<9-> $k$ samples
+%%       \end{itemize}
+%%     \end{column}
+%%   \end{columns}
+%% \end{frame}
 
 \begin{frame}\frametitle{four possible situations}\footnotesize
 \begin{tabular}{cl|c|c|}
@@ -132,7 +133,7 @@ The z-test is a something like a t-test (it is like you would know almost everyt
       \item name the function \texttt{ztest} or \texttt{my.z.test} - not \texttt{z.test} because \texttt{z.test} is already used
       \item set a default value for the population mean
       \end{itemize}
-    \item add a line to your function that allows you to also process numeric vectors containing missing values!
+    \item add a line to your function that allows you to process numeric vectors containing missing values!
     \item the function \texttt{pnorm(Z)} gives the probability of $x \leq Z $. Change your function so that it has the p-value (for a two sided test) as result. 
     \item now let the result be a named vector containing the estimated difference, Z, p and the n.
     \end{enumerate}
@@ -212,7 +213,7 @@ Now let the result be a named vector containing the estimated difference, Z, p a
   \end{alertblock}
 \end{frame}
 
-
+\subsection{Simulation Exercises}
 \begin{frame}\frametitle{Simulation Exercises} 
   \begin{enumerate}
   \item Now sample 100 values from a Normal distribution with mean 10 and standard deviation 2 and use a z-test to compare it against the population mean 10. What is the p-value?
@@ -222,7 +223,7 @@ Now let the result be a named vector containing the estimated difference, Z, p a
 \end{frame}
 
 
-\begin{frame}\frametitle{Simulation Exercises -- Solutions} 
+\begin{frame}[fragile]\frametitle{Simulation Exercises -- Solutions} 
   \begin{itemize}
   \item Now sample 100 values from a Normal distribution with mean 10 and standard deviation 2 and use a z-test to compare it against the population mean 10. What is the p-value? What the estimated difference?
   \end{itemize}
@@ -240,19 +241,190 @@ Now let the result be a named vector containing the estimated difference, Z, p a
 \end{frame}
 
 
-\begin{frame}\frametitle{Simulation Exercises -- Solutions} 
+\begin{frame}[fragile]\frametitle{Simulation Exercises -- Solutions} 
   \begin{itemize}
-  \item Now do the sampling and the testing 1000 times, what would be the number of statistically significant results? Use \texttt{replicate()} (which is a wrapper of \texttt{tapply()}) or a \texttt{for()} loop! Record at least the p-values and the estimated differences! Transform the result into a data frame
+  \item Now do the sampling and the testing 1000 times, what would be the number of statistically significant results? Use \texttt{replicate()} (which is a wrapper of \texttt{tapply()}) or a \texttt{for()} loop. Record at least the p-values and the estimated differences! Transform the result into a data frame.
   \end{itemize}
+using \texttt{replicate()}\footnotesize
 \begin{verbatim}
-
+> res <- replicate(1000, ztest(rnorm(100,mean=10,sd=2),x.sd=2,mu=10))
+> res <- as.data.frame(t(res))
+> head(res)
+     diff       Z   pval   n
+1 -0.2834 -1.4170 0.1565 100
+2  0.2540  1.2698 0.2042 100
+3 -0.1915 -0.9576 0.3383 100
+4  0.1462  0.7312 0.4646 100
+5  0.1122  0.5612 0.5747 100
+6 -0.0141 -0.0706 0.9437 100
 \end{verbatim}
 \end{frame}
 
-\begin{frame}\frametitle{Simulation Exercises -- Solutions} 
+
+\begin{frame}[fragile]\frametitle{Simulation Exercises -- Solutions} 
+  \begin{itemize}
+  \item Now do the sampling and the testing 1000 times, what would be the number of statistically significant results? Use \texttt{replicate()} (which is a wrapper of \texttt{tapply()}) or a \texttt{for()} loop. Record at least the p-values and the estimated differences! Transform the result into a data frame.
+  \end{itemize}
+using \texttt{replicate()} II\footnotesize
+\begin{verbatim}
+> res <- replicate(1000, ztest(rnorm(100,mean=10,sd=2),x.sd=2,mu=10),
++                        simplify = F)
+> res <- as.data.frame(Reduce(rbind,res))
+> head(res)
+        diff       Z   pval   n
+init -0.0175 -0.0874 0.9304 100
+     -0.0751 -0.3757 0.7072 100
+.1    0.0446  0.2232 0.8234 100
+.2   -0.3642 -1.8209 0.0686 100
+.3   -0.2039 -1.0195 0.3080 100
+.4   -0.1872 -0.9359 0.3493 100
+\end{verbatim}
+\end{frame}
+
+
+
+\begin{frame}[fragile]\frametitle{Simulation Exercises -- Solutions} 
+  \begin{itemize}
+  \item Now do the sampling and the testing 1000 times, what would be the number of statistically significant results? Use \texttt{replicate()} (which is a wrapper of \texttt{tapply()}) or a \texttt{for()} loop. Record at least the p-values and the estimated differences! Transform the result into a data frame.
+  \end{itemize}
+using \texttt{for()} \scriptsize
+\begin{verbatim}
+> res <- matrix(numeric(2000),ncol=2)
+> for(i in seq.int(1000)){
++     res[i,] <- ztest(rnorm(100,mean=10,sd=2),x.sd=2,mu=10)[c("pval","diff")] }
+> res <- as.data.frame(res)
+> names(res) <- c("pval","diff")
+> head(res)
+    pval    diff
+1 0.0591 -0.3775
+2 0.2466  0.2317
+3 0.6368  0.0944
+4 0.5538 -0.1184
+5 0.9897 -0.0026
+6 0.7748  0.0572
+\end{verbatim}
+\end{frame}
+
+\begin{frame}[fragile]\frametitle{Simulation Exercises -- Solutions} 
 \begin{itemize}
 \item Use \texttt{table()} to count the p-vals below 0.05. What type of error do you associate with it? What is the smallest absolute difference with a p-value below 0.05?
-\end{itemize}
+\end{itemize}\footnotesize
+\begin{verbatim}
+> table(res$pval < 0.05)
+
+FALSE  TRUE 
+  960    40 
+> tapply(abs(res$diff),res$pval < 0.05,summary)
+$`FALSE`
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+ 0.0002  0.0585  0.1280  0.1411  0.2068  0.3847 
+
+$`TRUE`
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+ 0.3928  0.4247  0.4408  0.4694  0.5102  0.6859 
+
+> min(abs(res$diff[res$pval<0.05]))
+[1] 0.3928
+\end{verbatim}
+\end{frame}
+
+\begin{frame}[fragile]\frametitle{Simulation Exercises -- Solutions} 
+\begin{itemize}
+\item Repeat the simulation above, change the sample size to 1000 in each of the 1000 samples! How many p-values below 0.05? What is now the smallest absolute difference with a p-value below 0.05?
+\end{itemize}\small
+\begin{verbatim}
+> res2 <- replicate(1000, ztest(rnorm(1000,mean=10,sd=2),
++                              x.sd=2,mu=10))
+> res2 <- as.data.frame(t(res2))
+> head(res2)
+     diff       Z   pval    n
+1 -0.0731 -1.1559 0.2477 1000
+2  0.0018  0.0292 0.9767 1000
+3  0.0072  0.1144 0.9089 1000
+4 -0.1145 -1.8100 0.0703 1000
+5 -0.1719 -2.7183 0.0066 1000
+6  0.0880  1.3916 0.1640 1000
+\end{verbatim}
+\end{frame}
+
+
+\begin{frame}[fragile]\frametitle{Simulation Exercises -- Solutions} 
+\begin{itemize}
+\item Repeat the simulation above, change the sample size to 1000 in each of the 1000 samples! How many p-values below 0.05? What is now the smallest absolute difference with a p-value below 0.05?
+\end{itemize}\small
+\begin{verbatim}
+> table(res2$pval < 0.05)
+
+FALSE  TRUE 
+  946    54 
+> tapply(abs(res2$diff),res$pval < 0.05,summary)
+$`FALSE`
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+0.00010 0.02092 0.04285 0.05149 0.07400 0.22610 
+
+$`TRUE`
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+0.00240 0.02115 0.04535 0.05435 0.08433 0.14760 
+\end{verbatim}
+\end{frame}
+
+\begin{frame}\frametitle{Simulation Exercises Part II} 
+  \begin{enumerate}
+  \item Concatenate the both resulting data frames from above using \texttt{rbind()}
+  \item Plot the distributions of the pvals and the difference per sample size. Use \texttt{ggplot2} with an appropriate geom (density/histogram)
+  \item What is the message?
+  \end{enumerate}
+\end{frame}
+
+\begin{frame}[fragile]\frametitle{Simulation Exercises -- Solutions} 
+\begin{itemize}
+\item Concatenate the both resulting data frames from above using \texttt{rbind()}
+\item Plot the distributions of the pvals and the difference per sample size. Use \texttt{ggplot2} with an appropriate geom (density/histogram)
+\end{itemize}\small
+\begin{verbatim}
+> res <- rbind(res,res2)  
+> require(ggplot2)
+> ggplot(res,aes(x=pval)) +
++     geom_histogram(bin=0.1,fill="forestgreen") +
++     facet_grid(~ n)
+> ggsave("hist.png")
+\end{verbatim}
+\end{frame}
+
+\begin{frame}[fragile]\frametitle{Simulation Exercises -- Solutions} 
+\begin{center}
+\includegraphics[width=8cm,height=6cm]{hist.png}
+\end{center}
+\end{frame}
+
+\begin{frame}[fragile]\frametitle{Simulation Exercises -- Solutions} 
+\begin{itemize}
+\item Plot the distributions of the pvals and the difference per sample size. Use \texttt{ggplot2} with an appropriate geom (density/histogram)
+\end{itemize}\small
+\begin{verbatim}
+> ggplot(res,aes(x=diff,colour=factor(n))) +
++     geom_density(size=3)
+> ggsave("dens.png")
+\end{verbatim}
+\end{frame}
+
+\begin{frame}[fragile]\frametitle{Simulation Exercises -- Solutions} 
+\begin{center}
+\includegraphics[width=8cm,height=6cm]{dens.png}
+\end{center}
+\end{frame}
+
+
+\begin{frame}[fragile]\frametitle{Simulation Exercises -- Solutions} 
+\begin{center}
+\includegraphics[width=8cm,height=6cm]{point.png}
+\end{center}
+\end{frame}
+
+\begin{frame}[fragile]\frametitle{Simulation Exercises -- Solutions} 
+\begin{center}
+\includegraphics[width=8cm,height=6cm]{dens2d.png}
+\end{center}
 \end{frame}
 
 

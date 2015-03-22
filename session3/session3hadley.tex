@@ -206,7 +206,7 @@ faceting: facet_null()
 
 \begin{frame}[fragile]\frametitle{Layers}
   \begin{itemize}
-  \item you can also join the points in the order of the data fram by using the path geom instead\footnotesize
+  \item you can also join the points in the order of the data frame by using the path geom instead\footnotesize
 \begin{verbatim}
 > my.text <- geom_text(aes(label=l), 
 +                          hjust=1.1, 
@@ -336,7 +336,7 @@ Create the six plots and save them into a file.
   \item create a plot using ggplot, map the variable EC1 to x and use \texttt{geom\_bar()}
   \item now to the plot again, but add another aesthetic: \texttt{fill} (colour of the filling); map \texttt{fill} to \texttt{Stim.Type}
   \item add the \texttt{position} argument to \texttt{geom\_bar()}, set it to "fill"
-  \item now add \texttt{facet\_wrap(~testid)} to show the same graph per time
+  \item now add \texttt{facet\_wrap($\sim$ testid)} to show the same graph per time
   \item make a graph facetted per child showing stacked hit/incorrect bars with time on the x axis
   \item show the distribution of the variable \texttt{TTime} using \texttt{geom\_boxplot()} again facetted per child and separated per hit/incorrect
   \end{enumerate}
@@ -639,7 +639,8 @@ The dplyr package makes each of these steps as fast and easy as possible by:
   \item \texttt{summarise()} makes summary statistics
   \end{itemize}
 \begin{verbatim}
-> sum.frame <- summarise(data, mean.ttime=mean(TTime), sd.ttime = sd(TTime))
+> sum.frame <- summarise(data, mean.ttime=mean(TTime), 
++                        sd.ttime = sd(TTime))
 > sum.frame
   mean.ttime sd.ttime
 1   18393.74 17876.12  
@@ -706,7 +707,7 @@ Groups: Subject
 \begin{frame}[fragile]\frametitle{dplyr Exercises}
   \begin{itemize}
   \item use \texttt{select()} and \texttt{filter()} in combination ($\%>\%$) to select all rows belonging to the post or the pre test, keep the Subject, Sex, Age\_PRETEST and Stim.Type column. Create a new data frame named data2 or something like this.
-  \end{itemize}
+  \end{itemize}\small
 \begin{verbatim}
 > data2 <- filter(data, testid %in% c("test1","test2") )%>%
 +     select(Subject,Sex,Age_PRETEST,Stim.Type)
@@ -725,7 +726,7 @@ Groups: Subject
 \begin{frame}[fragile]\frametitle{dplyr Exercises}
   \begin{itemize}
   \item add two new variables containing the counts of hit and incorrect. Use \texttt{mutate()} and \texttt{sum(Stim.Type=='hit')}
-  \end{itemize}
+  \end{itemize}\small
 \begin{verbatim}
 > data2 <- mutate(data2,n.hit=sum(Stim.Type=='hit'),
 +                 n.incorrect=sum(Stim.Type=='incorrect'))
@@ -744,7 +745,7 @@ Groups: Subject
 \begin{frame}[fragile]\frametitle{dplyr Exercises}
   \begin{itemize}
   \item use \texttt{group\_by()} and \texttt{summarise()} to extract the minimum and maximum TTime per person from the original data frame
-  \end{itemize}
+  \end{itemize}\small
 \begin{verbatim}
 > sum.frame <- group_by(data, Subject) %>% 
 +     mutate(min.ttime = min(TTime), max.ttime=max(TTime))
@@ -766,7 +767,7 @@ Groups: Subject
 \begin{frame}[fragile]\frametitle{dplyr Exercises}
   \begin{itemize}
   \item repeat the last exercise, but now group per person and EC1
-  \end{itemize}
+  \end{itemize}\small
 \begin{verbatim}
   > sum.frame <- group_by(data, Subject, EC1) %>% 
   +     mutate(min.ttime = min(TTime), max.ttime=max(TTime))
@@ -889,15 +890,16 @@ Not only colour scales are modifiable
 \begin{frame}[fragile]\frametitle{Continuous Scales}
   \begin{itemize}
   \item ... so maybe we should try $x^{1/3}$
-  \item we first have to write a new transformation
+  \item we first have to write a new transformation\small
+  \end{itemize}
 \begin{verbatim}
-> xt1_3_trans <- function() trans_new("xt1_3", function(x) x**(1/3), function(x) x**3)
+> xt1_3_trans <- function() 
++    trans_new("xt1_3", function(x) x**(1/3), function(x) x**3)
 > ggplot(data,aes(x=Trial,y=TTime)) +
 +     geom_point() +
-+     scale_y_continuous(trans="xt2_3")
++     scale_y_continuous(trans="xt1_3")
 > ggsave("ggp13.png")
 \end{verbatim}
-  \end{itemize}
 \begin{center}
 \linkimage{\includegraphics[width=5cm,height=5cm]{ggp13.png}}{ggp13.png}
 \end{center}
@@ -962,7 +964,7 @@ Other transformation available: \small
 \begin{verbatim}
 > ggplot(data,aes(x=Trial,y=TTime,colour=Age_PRETEST)) +
 +     geom_point() +
-+     scale_y_continuous(trans="xt2_3") 
++     scale_y_continuous(trans="xt1_3") 
 > ggsave("ggp14.png")
 \end{verbatim}
 \begin{center}
@@ -978,7 +980,7 @@ Other transformation available: \small
 \begin{verbatim}
 > ggplot(data,aes(x=TTime,fill=..count..)) +
 +     geom_histogram(aes(y=..density..)) +
-+     facet_wrap(~testid) 
++     facet_wrap(~Subject) 
 \end{verbatim}
 \begin{center}
 \linkimage{\includegraphics[width=7cm,height=3cm]{ggp15a.png}}{ggp15a.png}
@@ -989,11 +991,11 @@ Other transformation available: \small
 \begin{frame}[fragile]\frametitle{Exercises}
   \begin{itemize}
   \item then add \texttt{scale\_fill\_gradient()} and set its arguments low and high to, say green and red resp. (or make your own choice)
-  \end{itemize}
+  \end{itemize}\small
 \begin{verbatim}
 > ggplot(data,aes(x=TTime,fill=..count..)) +
-+     geom_histogram(aes(y=..density..)) +
-+     facet_wrap(~testid) +
++     geom_histogram() +
++     facet_wrap(~Subject) +
 +     scale_fill_gradient(low="forestgreen",
 +                         high="firebrick3")
 \end{verbatim}

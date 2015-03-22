@@ -1,3 +1,4 @@
+setwd("/media/mandy/Volume/transcend/mpicbs/2015kurs/session3")
 ## Revision
 m <- matrix(1:100, nrow=10)
 l <- list(a=1:10,b=rep(c(T,F),2),c=letters)

@@ -229,6 +229,7 @@ p1 + geom_hline(yintercept=1:10) +
 
 load("201503data.rdata")
 
+require(stringr)
 data$EC1 <- factor(str_sub(data$Event.Code,1,2))
 
 ## now create a plot using ggplot
@@ -426,7 +427,7 @@ xt1_3_trans <- function() trans_new("xt1_3", function(x) x**(1/3), function(x) x
 
 ggplot(data,aes(x=Trial,y=TTime)) +
     geom_point() +
-    scale_y_continuous(trans="xt2_3")
+    scale_y_continuous(trans="xt1_3")
 
 ggsave("ggp13.png")
 
@@ -445,7 +446,7 @@ ggplot(data,aes(x=Trial,y=TTime)) +
 
 ggplot(data,aes(x=Trial,y=TTime,colour=Age_PRETEST)) +
     geom_point() +
-    scale_y_continuous(trans="xt2_3") 
+    scale_y_continuous(trans="xt1_3") 
 ggsave("ggp14.png")
 
 
