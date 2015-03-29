@@ -22,6 +22,54 @@
 \frametitle{Table of Contents}\tableofcontents
 \end{frame}
 
+
+\section{Exercises}
+\subsection{dplyr/ggplot2}
+\begin{frame}\frametitle{Exercises} 
+  \begin{enumerate}
+  \item load the data (file: session4data.rdata)
+  \item make a new summary data frame (per subject and time) containing:
+    \begin{itemize}
+    \item the number of trials
+    \item the number correct trials (absolute and relative)
+    \item the mean TTime and the standard deviation of TTime
+    \item the respective standard error of the mean
+    \end{itemize}
+  \item keep the information about Sex and Age\_PRETEST
+  \item make a plot with time on the x-axis and TTime on the y-axis showing the means and the 95\% confidence intervals (\texttt{geom\_pointrange()})
+  \item add the number of trials and the percentage of correct ones using \texttt{geom\_text()}
+  \end{enumerate}
+\end{frame}
+
+\begin{frame}[fragile,allowframebreaks]\frametitle{Exercises - Solutions} 
+    \begin{itemize}
+    \item \item load the data (file: session4data.rdata)
+    \item make a new summary data frame (per subject and time) containing:
+    \end{itemize}\footnotesize
+\begin{verbatim}
+> sumdf <- data %>%
++     group_by(Subject,Sex,Age_PRETEST,testid) %>%
++     summarise(count=n(),
++               n.corr = sum(Stim.Type=="hit"),
++               perc.corr = n.corr/count,
++               mean.ttime = mean(TTime),
++               sd.ttime = sd(TTime),
++               se.ttime = sd.ttime/sqrt(count))
+> head(sumdf)
+Source: local data frame [6 x 10]
+Groups: Subject, Sex, Age_PRETEST
+
+  Subject Sex Age_PRETEST testid count n.corr perc.corr mean.ttime 
+1       1   f        3.11  test1    95     63 0.6631579   8621.674 
+2       1   f        3.11      1    60     32 0.5333333   9256.367 
+3       1   f        3.11      2    59     32 0.5423729   9704.712 
+4       1   f        3.11      3    60     38 0.6333333  14189.550 
+5       1   f        3.11      4    59     31 0.5254237  13049.831 
+6       1   f        3.11      5    59     33 0.5593220  14673.525 
+Variables not shown: sd.ttime se.ttime (dbl)  
+\end{verbatim}
+\end{frame}
+
 \section{Preliminaries}
 %% \subsection{Classifaction of tests}
 %% \begin{frame}\frametitle{Tests}
@@ -181,6 +229,7 @@ The function \texttt{pnorm(Z)} gives the probability of $x \leq Z $. Change your
 
 \begin{frame}[fragile]\frametitle{Z-test for a population mean}
 Now let the result be a named vector containing the estimated difference, Z, p and the n.
+\footnotesize
 \begin{verbatim}
 > ztest <- function(x,x.sd,mu=0){
 +     x <- x[!is.na(x)]
@@ -493,7 +542,7 @@ $$ t = \frac{\bar{x}-\mu_0}{s/\sqrt{n}}$$ where $\bar{x}$ is the sample mean, $s
 There are two ways to perform a two sample t-test in R:
 \begin{itemize}
 \item given two vectors \texttt{x} and \texttt{y} containing the measurement values from the respective groups \texttt{t.test(x,y)}
-\item given one vector \texttt{x} containing all the measurement values and one vector \texttt{g} containing the group membership \texttt{t.test(x ~ g)} (read: x dependend on g)
+\item given one vector \texttt{x} containing all the measurement values and one vector \texttt{g} containing the group membership $t.test(x \sim g)$ (read: x dependend on g)
 \end{itemize}
 \end{frame}
 
@@ -548,7 +597,7 @@ mean in group A mean in group B
   \end{itemize}
 \end{frame}
 
-\begin{frame}[fragile]\frametitle{Student's t-test}
+\begin{frame}[fragile]\frametitle{Student's t-test}\footnotesize
 \begin{verbatim}
 
 
@@ -573,6 +622,155 @@ sample estimates:
   \item the t-test, especially the Welch test is appropriate whenever the values are normally distributed
   \item it is also recommended for group sizes $\geq 30$ (robust against deviation from normality)
   \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile,allowframebreaks]\frametitle{Exercises} 
+  \begin{enumerate}
+  \item<1-> use a t-test to compare \texttt{TTime} according to \texttt{Stim.Type}, visualize it. What is the problem?
+  \item<2-> now do the same for Subject 1 on pre and post test (use \texttt{filter()} or indexing to get the resp. subsets)
+  \item<3-> use the following code to do the test on every subset \texttt{Subject} and \texttt{testid}, try to figure what is happening in each step:\tiny
+\begin{verbatim}
+data.l <- split(data,list(data$Subject,data$testid),drop=T)
+tmp.l <- lapply(data.l,function(x) {
+    if(min(table(x$Stim.Type)) < 5) return(NULL)
+    tob <- t.test(x$TTime ~ x$Stim.Type)
+    tmp <- data.frame(
+        Subject = unique(x$Subject),
+        testid = unique(x$testid),
+        mean.group.1 = tob$estimate[1],
+        mean.group.2 = tob$estimate[2],
+        name.test.stat = tob$statistic,
+        conf.lower = tob$conf.int[1],
+        conf.upper = tob$conf.int[2],
+        pval = tob$p.value,
+        alternative = tob$alternative,
+        tob$method)})
+res <- Reduce(rbind,tmp.l)
+\end{verbatim}
+  \item<3-> make plots to visualize the results. 
+  \item<4-> how many tests have a statistically significant result? How many did you expect? Is there a tendency? What could be the next step?
+  \end{enumerate}
+\end{frame}
+
+\begin{frame}[fragile]\frametitle{Exercises - Solutions}
+  \begin{itemize}
+  \item use a t-test to compare \texttt{TTime} according to \texttt{Stim.Type}, visualize it. What is the problem?
+  \end{itemize}\tiny
+\begin{verbatim}
+> t.test(data$TTime ~ data$Stim.Type)
+
+	Welch Two Sample t-test
+
+data:  data$TTime by data$Stim.Type
+t = -6.3567, df = 9541.891, p-value = 2.156e-10
+alternative hypothesis: true difference in means is not equal to 0
+95 percent confidence interval:
+ -2773.574 -1466.161
+sample estimates:
+      mean in group hit mean in group incorrect 
+               17579.77                19699.64   
+> ggplot(data,aes(x=Stim.Type,y=TTime)) +
++     geom_boxplot()
+\end{verbatim}
+\end{frame}
+
+
+\begin{frame}[fragile,allowframebreaks]\frametitle{Exercises - Solutions}
+  \begin{itemize}
+  \item now do the same for Subject 1 on pre and post test (use \texttt{filter()} or indexing to get the resp. subsets)
+  \end{itemize}\footnotesize
+\begin{verbatim}
+> t.test(data$TTime[data$Subject==1 & data$testid=="test1"] ~
++        data$Stim.Type[data$Subject==1 & data$testid=="test1"])
+
+	Welch Two Sample t-test
+
+data:  data$TTime[data$Subject == 1 & data$testid == "test1"] by data$Stim.Type[data$Subject == 1 & data$testid == "test1"]
+t = -0.5846, df = 44.183, p-value = 0.5618
+alternative hypothesis: true difference in means is not equal to 0
+95 percent confidence interval:
+ -4930.842  2713.191
+sample estimates:
+      mean in group hit mean in group incorrect 
+               8248.175                9357.000 
+
+> t.test(data$TTime[data$Subject==1 & data$testid=="test2"] ~
++        data$Stim.Type[data$Subject==1 & data$testid=="test2"])
+
+	Welch Two Sample t-test
+
+data:  data$TTime[data$Subject == 1 & data$testid == "test2"] by data$Stim.Type[data$Subject == 1 & data$testid == "test2"]
+t = -1.7694, df = 47.022, p-value = 0.08332
+alternative hypothesis: true difference in means is not equal to 0
+95 percent confidence interval:
+ -7004.4904   448.9388
+sample estimates:
+      mean in group hit mean in group incorrect 
+               4012.480                7290.256 
+
+\end{verbatim}
+\end{frame}
+
+\begin{frame}[fragile]\frametitle{Exercises - Solutions}
+  \begin{itemize}
+  \item make plots to visualize the results
+  \end{itemize}\footnotesize
+\begin{verbatim}
+> ggplot(data,aes(x=testid,y=TTime)) +
++    geom_boxplot(aes(fill=Stim.Type)) +
++    facet_wrap(~Subject)
+> ggplot(data,aes(x=factor(Subject),y=TTime)) +
++    geom_boxplot(aes(fill=Stim.Type)) +
++    facet_wrap(~testid)
+\end{verbatim}
+\end{frame}
+
+
+\begin{frame}[fragile]\frametitle{Exercises - Solutions}
+  \begin{itemize}
+  \item how many tests have an statistically significant result? How many did you expect? 
+  \end{itemize}\footnotesize
+\begin{verbatim}
+> table(res$pval < 0.05)
+
+FALSE  TRUE 
+  165    22 
+> prop.table(table(res$pval < 0.05))
+
+    FALSE      TRUE 
+0.8823529 0.1176471 
+> 
+\end{verbatim}
+\end{frame}
+
+
+\begin{frame}[fragile,allowframebreaks]\frametitle{Exercises - Solutions}
+  \begin{itemize}
+  \item  What could be the next step?
+  \end{itemize}\tiny
+\begin{verbatim}
+tmp.l <- lapply(data.l,function(x) {
+    if(min(table(x$Stim.Type)) < 5) return(NULL)
+    tob <- t.test(x$TTime ~ x$Stim.Type)
+    tmp <- data.frame(
+        Subject = unique(x$Subject),
+        testid = unique(x$testid),
+        perc.corr = sum(x$Stim.Type=="hit")/sum(!is.na(x$Stim.Type)),
+        mean.group.1 = tob$estimate[1],
+        mean.group.2 = tob$estimate[2],
+        name.test.stat = tob$statistic,
+        conf.lower = tob$conf.int[1],
+        conf.upper = tob$conf.int[2],
+        pval = tob$p.value,
+        alternative = tob$alternative,
+        tob$method)})
+
+res <- Reduce(rbind,tmp.l)
+
+ggplot(res,aes(x=perc.corr,y=mean.group.1 - mean.group.2)) +
+    geom_point() +
+    geom_smooth()
+\end{verbatim}
 \end{frame}
 
 \end{document}

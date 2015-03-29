@@ -377,9 +377,15 @@ data2 <- mutate(data2,n.hit=sum(Stim.Type=='hit'),
 sum.frame <- group_by(data, Subject) %>% 
     mutate(min.ttime = min(TTime), max.ttime=max(TTime))
 
+sum.frame <- group_by(data, Subject) %>% 
+    summarise(min.ttime = min(TTime), max.ttime=max(TTime))
+
 ## repeat the last exercise, but now group per person and EC1
 sum.frame <- group_by(data, Subject, EC1) %>% 
     mutate(min.ttime = min(TTime), max.ttime=max(TTime))
+
+sum.frame <- group_by(data, Subject, EC1) %>% 
+    summarise(min.ttime = min(TTime), max.ttime=max(TTime))
 
 
 ###################################################################################
@@ -390,7 +396,7 @@ require(ggplot2)
 ggplot(data,aes(x=EC1,fill=Stim.Type)) +
     geom_bar(position = "fill") +
     facet_wrap(~testid,scales = "free") +
-    scale_fill_manual(values=c("forestgreen","firebrick"))
+    scale_fill_manual(values=c("forestgreen","orange"))
 
 ggsave("ggp10.png")
 
@@ -423,7 +429,9 @@ ggplot(data,aes(x=Trial,y=TTime)) +
     scale_y_continuous(trans="sqrt")
 ggsave("ggp12.png")
 
-xt1_3_trans <- function() trans_new("xt1_3", function(x) x**(1/3), function(x) x**3)
+
+xt1_3_trans <- function()
+    trans_new("xt1_3", function(x) x**(1/3), function(x) x**3)
 
 ggplot(data,aes(x=Trial,y=TTime)) +
     geom_point() +

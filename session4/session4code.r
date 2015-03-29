@@ -1,5 +1,56 @@
 setwd("/media/mandy/Volume/transcend/mpicbs/2015kurs/session4")
 
+## load the data (file: session4data.rdata)
+## make a new summary data frame (per subject and time) containing:
+###### the number of trials
+###### the number correct trials (absolute and relative)
+###### the mean TTime and the standard deviation of TTime
+###### the respective standard error of the mean
+##  keep the information about Sex and Age\_PRETEST
+
+load("session4data.rdata")
+
+require(dplyr)
+sumdf <- data %>%
+    group_by(Subject,Sex,Age_PRETEST,testid) %>%
+    summarise(count=n(),
+              n.corr = sum(Stim.Type=="hit"),
+              perc.corr = n.corr/count,
+              mean.ttime = mean(TTime),
+              sd.ttime = sd(TTime),
+              se.ttime = sd.ttime/sqrt(count))
+
+
+## make a plot with time on the x-axis and TTime on the y-axis
+## showing the means and the 95\% confidence intervals (geom_pointrange())
+## hint: you can use operations inside aes()
+
+require(ggplot2)
+
+p1 <- ggplot(sumdf,aes(x=testid,
+                 y=mean.ttime,
+                 ymin=mean.ttime - 1.96*se.ttime,
+                 ymax=mean.ttime + 1.96*se.ttime)) +
+       geom_pointrange() +
+       facet_wrap(~Subject)
+
+
+## add the number of trials and the percentage of
+## correct ones using geom\_text()
+
+p1 + geom_text(y=0,aes(label=n.corr)) +
+    geom_text(y=60000,aes(label=round(perc.corr,2)),angle=90) +
+    scale_y_continuous(limits=c(0,75000))
+
+
+
+p1 + geom_text(y=0, aes(label=n.corr)) +
+    geom_text(y=70000,
+              aes(label=str_pad(round(perc.corr,2),width = 4,side = "right",pad=0)),
+              angle=90,hjust=1) +
+    scale_y_continuous(limits=c(0,70000))
+
+
 ## Write a function which takes a vector, the poulation standard deviation
 ## and the population mean as arguments
 ## and which gives the Z score as result. 
@@ -113,7 +164,6 @@ res <- rbind(res,res2)
 ## geom (density/histogram)
 
 
-
 require(ggplot2)
 ggplot(res,aes(x=pval)) +
     geom_histogram(bin=0.1,fill="forestgreen") +
@@ -163,6 +213,114 @@ g <- sample(c("A","B"),12,replace = T)
 t.test(x, y)
 t.test(x ~ g)
 t.test(x, y, var.equal = T)
+
+
+######################################################################
+####################### Exercises  ###################################
+######################################################################
+
+## use a t-test to compare TTime according to Stim.Type,
+## visualize it. What is the problem?
+
+t.test(data$TTime ~ data$Stim.Type)
+
+ggplot(data,aes(x=Stim.Type,y=TTime)) +
+    geom_boxplot()
+
+## now do the same for Subject 1 on pre and post test (use filter()
+## or indexing to get the resp. subsets)
+
+t.test(data$TTime[data$Subject==1 & data$testid=="test1"] ~
+       data$Stim.Type[data$Subject==1 & data$testid=="test1"])
+
+t.test(data$TTime[data$Subject==1 & data$testid=="test2"] ~
+       data$Stim.Type[data$Subject==1 & data$testid=="test2"])
+
+
+
+
+## use the following code to do the test on every subset Subject
+## and testid, try to figure what is happening in each step:
+
+data.l <- split(data,list(data$Subject,data$testid),drop=T)
+
+tmp.l <- lapply(data.l,function(x) {
+    if(min(table(x$Stim.Type)) < 5) return(NULL)
+    tob <- t.test(x$TTime ~ x$Stim.Type)
+    tmp <- data.frame(
+        Subject = unique(x$Subject),
+        testid = unique(x$testid),
+        mean.group.1 = tob$estimate[1],
+        mean.group.2 = tob$estimate[2],
+        name.test.stat = tob$statistic,
+        conf.lower = tob$conf.int[1],
+        conf.upper = tob$conf.int[2],
+        pval = tob$p.value,
+        alternative = tob$alternative,
+        tob$method)})
+
+res <- Reduce(rbind,tmp.l)
+
+## plots
+
+ggplot(data,aes(x=testid,y=TTime)) +
+    geom_boxplot(aes(fill=Stim.Type)) +
+    facet_wrap(~Subject)
+
+
+ggplot(data,aes(x=factor(Subject),y=TTime)) +
+    geom_boxplot(aes(fill=Stim.Type)) +
+    facet_wrap(~testid)
+
+
+## how many tests have a statistically significant result?
+table(res$pval < 0.05)
+
+prop.table(table(res$pval < 0.05))
+
+## Is there a tendency? What could be the next step?
+
+
+## hypothesis: if the child tries to answer correctly it thinks about it 
+## if it does not know the answer immediately. So the difference of
+## TTime resp. correct/incorrect should be higher as the percentage of
+## correct answers is higher
+
+
+tmp.l <- lapply(data.l,function(x) {
+    if(min(table(x$Stim.Type)) < 5) return(NULL)
+    tob <- t.test(x$TTime ~ x$Stim.Type)
+    tmp <- data.frame(
+        Subject = unique(x$Subject),
+        testid = unique(x$testid),
+        perc.corr = sum(x$Stim.Type=="hit")/sum(!is.na(x$Stim.Type)),
+        mean.group.1 = tob$estimate[1],
+        mean.group.2 = tob$estimate[2],
+        name.test.stat = tob$statistic,
+        conf.lower = tob$conf.int[1],
+        conf.upper = tob$conf.int[2],
+        pval = tob$p.value,
+        alternative = tob$alternative,
+        tob$method)})
+
+res <- Reduce(rbind,tmp.l)
+
+ggplot(res,aes(x=perc.corr,y=mean.group.1 - mean.group.2)) +
+    geom_point() +
+    geom_smooth()
+
+
+########################################################################
+############## Exercises stats ggplot2    ##############################
+########################################################################
+
+
+require(Hmisc)
+ggplot(data,aes(x=testid,y=TTime)) +
+    stat_summary(fun.data="mean_se",mult=1.96,geom="pointrange") +
+    stat_bin(y=0,aes(label=..count..),geom="text",position="identity") +
+    scale_y_continuous(limits=c(0,75000)) +
+    facet_wrap(~Subject)
 
 
 

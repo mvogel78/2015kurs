@@ -1,5 +1,54 @@
 setwd("/media/mandy/Volume/transcend/mpicbs/2015kurs/session4")
 
+## load the data (file: session4data.rdata)
+## make a new summary data frame (per subject and time) containing:
+###### the number of trials
+###### the number correct trials (absolute and relative)
+###### the mean TTime and the standard deviation of TTime
+###### the respective standard error of the mean
+##  keep the information about Sex and Age\_PRETEST
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+## make a plot with time on the x-axis and TTime on the y-axis
+## showing the means and the 95\% confidence intervals (geom_pointrange())
+## hint: you can use operations inside aes()
+
+
+
+
+
+
+
+
+
+
+
+
+
+## add the number of trials and the percentage of
+## correct ones using geom\_text()
+
+
+
+
+
+
+
+
+
+
 ## Write a function which takes a vector, the poulation standard deviation
 ## and the population mean as arguments
 ## and which gives the Z score as result. 
@@ -142,6 +191,107 @@ g <- sample(c("A","B"),12,replace = T)
 t.test(x, y)
 t.test(x ~ g)
 t.test(x, y, var.equal = T)
+
+
+
+######################################################################
+####################### Exercises  ###################################
+######################################################################
+
+## use a t-test to compare TTime according to Stim.Type,
+## visualize it. What is the problem?
+
+
+
+
+
+
+
+## now do the same for Subject 1 on pre and post test (use filter()
+## or indexing to get the resp. subsets)
+
+
+
+
+
+
+
+
+## use the following code to do the test on every subset Subject
+## and testid, try to figure what is happening in each step:
+
+data.l <- split(data,list(data$Subject,data$testid),drop=T)
+
+tmp.l <- lapply(data.l,function(x) {
+    if(min(table(x$Stim.Type)) < 5) return(NULL)
+    tob <- t.test(x$TTime ~ x$Stim.Type)
+    tmp <- data.frame(
+        Subject = unique(x$Subject),
+        testid = unique(x$testid),
+        mean.group.1 = tob$estimate[1],
+        mean.group.2 = tob$estimate[2],
+        name.test.stat = tob$statistic,
+        conf.lower = tob$conf.int[1],
+        conf.upper = tob$conf.int[2],
+        pval = tob$p.value,
+        alternative = tob$alternative,
+        tob$method)})
+
+res <- Reduce(rbind,tmp.l)
+
+## plots
+
+
+
+
+
+
+
+
+
+## how many tests have a statistically significant result?
+
+
+
+
+## Is there a tendency? What could be the next step?
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+########################################################################
+############## Exercises stats ggplot2    ##############################
+########################################################################
+
+
+require(Hmisc)
+ggplot(data,aes(x=testid,y=TTime)) +
+    stat_summary(fun.data="mean_se",mult=1.96,geom="pointrange") +
+    stat_bin(y=0,aes(label=..count..),geom="text",position="identity") +
+    scale_y_continuous(limits=c(0,75000)) +
+    facet_wrap(~Subject)
 
 
 

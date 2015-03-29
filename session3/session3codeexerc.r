@@ -186,7 +186,7 @@ str(po)
 x1 <- 1:10; y1 <- 1:10; z1 <- 10:1
 l1 <- LETTERS[1:10]
 a <- 10; b <- (0:-9)/10:1
-ex <- data.frame(x=x1,y=y1,z=z1,l=l1,a=a,b=b)
+ex <- data.frame(x1=x1,y1=y1,z=z1,l=l1,a=a,b=b)
 
 ## create a new ggplot object containing the data
 po <- ggplot(ex,aes(x=x1,y=y1))
@@ -203,7 +203,7 @@ ex2 <- data.frame(x1=sample(1:20),
 head(ex2,10)
 
 ## replace data in po
-pn <- po %+% ex2 
+pn <- p1 %+% ex2 
 pn + geom_line()
 
 
@@ -219,10 +219,10 @@ pn + geom_path() + my.text
 p1 + geom_abline(intercept=10,slope=-1,
                 colour=rgb(.5,.5,.9))
 ## two lines
-p1 + geom_abline(intercept=c(10,9),slope=c(-1,-2),
+p1 + geom_abline(intercept=c(10,1),slope=c(-1,-2),
                 colour=rgb(.5,.5,.9))
 ## more lines
-p1 + geom_abline(intercept=10:1,slope=-(10:1)/10,
+p1 + geom_abline(intercept=c(10:1),slope=-(10:1)/10,
                 colour=rgb(.5,.5,.9))
 
 p1 +
@@ -245,36 +245,46 @@ p1 + geom_hline(yintercept=1:10) +
 
 tt <- load("201503data.rdata")
 
-
+require(stringr)
+data$EC1 <- factor(str_sub(data$Event.Code,1,2))
 
 ## now create a plot using ggplot
 ## map the variable EC1 to x and use geom_bar()
 
-
-
+ggplot(data,aes(x=EC1)) +
+    geom_bar()
 
 ggsave("plot1.png")
+
+xx <- data.frame(unique(data$EC1),sample(1:6))
+
+## if the summarising is already done:
+ggplot(xx,aes(x=unique.data.EC1.,y=sample.1.6.)) +
+    geom_bar(stat="identity")
+
 
 ## now to the plot again, but add another aesthetic: fill (colour of the filling)
 ## map fill to Stim.Type
 
 
-
+ggplot(data,aes(x=EC1,fill=Stim.Type)) +
+    geom_bar()
 
 ggsave("plot2.png")
 
 ## add the position argument to geom_bar(), set it to "fill"
 
+ggplot(data,aes(x=EC1,fill=Stim.Type)) +
+    geom_bar(position="fill") 
 
 
 ggsave("plot3.png")
 
 ## now add facet_wrap(~testid) to show the same graph per time
 
-
-
-
-
+ggplot(data,aes(x=EC1,fill=Stim.Type)) +
+    geom_bar(position="fill") +
+    facet_wrap(~testid, scales="free")
 
 
 ggsave("plot4.png")
@@ -285,7 +295,13 @@ ggsave("plot4.png")
 ## make a graph per child showing stacked hit/incorrect bars
 ## with time on the x axis
 
+ggplot(data,aes(x=testid,fill=Stim.Type)) +
+    geom_bar(position="fill") +
+    facet_wrap(~Subject + EC1, scales="free")
 
+ggplot(data,aes(x=testid,fill=Stim.Type)) +
+    geom_bar(position="fill") +
+    facet_wrap(~Subject, scales="free",nrow=5)
 
 
 ggsave("plot5.png")
@@ -293,12 +309,12 @@ ggsave("plot5.png")
 
 ## show the distribution of the variable TTime using geom_boxplot()
 
+ggplot(data,aes(x=testid,y=TTime)) +
+    geom_boxplot() +
+    facet_wrap(~Subject) +
+    theme_hc()
 
-
-
-
-
-ggsave("plotbp.png")
+ ggsave("plotbp.png")
 
 ###################################################################################
 ########################           dplyr             ##############################
