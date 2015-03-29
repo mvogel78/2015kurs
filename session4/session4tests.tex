@@ -626,9 +626,9 @@ sample estimates:
 
 \begin{frame}[fragile,allowframebreaks]\frametitle{Exercises} 
   \begin{enumerate}
-  \item<1-> use a t-test to compare \texttt{TTime} according to \texttt{Stim.Type}, visualize it. What is the problem?
-  \item<2-> now do the same for Subject 1 on pre and post test (use \texttt{filter()} or indexing to get the resp. subsets)
-  \item<3-> use the following code to do the test on every subset \texttt{Subject} and \texttt{testid}, try to figure what is happening in each step:\tiny
+  \item use a t-test to compare \texttt{TTime} according to \texttt{Stim.Type}, visualize it. What is the problem?
+  \item now do the same for Subject 1 on pre and post test (use \texttt{filter()} or indexing to get the resp. subsets)
+  \item use the following code to do the test on every subset \texttt{Subject} and \texttt{testid}, try to figure what is happening in each step:\tiny
 \begin{verbatim}
 data.l <- split(data,list(data$Subject,data$testid),drop=T)
 tmp.l <- lapply(data.l,function(x) {
@@ -646,9 +646,9 @@ tmp.l <- lapply(data.l,function(x) {
         alternative = tob$alternative,
         tob$method)})
 res <- Reduce(rbind,tmp.l)
-\end{verbatim}
-  \item<3-> make plots to visualize the results. 
-  \item<4-> how many tests have a statistically significant result? How many did you expect? Is there a tendency? What could be the next step?
+\end{verbatim}\normalsize
+  \item make plots to visualize the results. 
+  \item how many tests have a statistically significant result? How many did you expect? Is there a tendency? What could be the next step?
   \end{enumerate}
 \end{frame}
 
