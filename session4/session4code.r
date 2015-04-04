@@ -1,4 +1,4 @@
-setwd("/media/mandy/Volume/transcend/mpicbs/2015kurs/session4")
+setwd("/media/mvogel/Volume/transcend/mpicbs/2015kurs/session4")
 
 ## load the data (file: session4data.rdata)
 ## make a new summary data frame (per subject and time) containing:
@@ -34,20 +34,33 @@ p1 <- ggplot(sumdf,aes(x=testid,
        geom_pointrange() +
        facet_wrap(~Subject)
 
+## second variant
+
+sumdf$conlow <- sumdf$mean.ttime - 1.96 * sumdf$se.ttime
+sumdf$conup <- sumdf$mean.ttime + 1.96 * sumdf$se.ttime
+
+require(ggplot2)
+p1 <- ggplot(sumdf,aes(x=testid,
+                 y=mean.ttime,
+                 ymin=conlow,
+                 ymax=conup)) +
+       geom_pointrange() +
+       facet_wrap(~Subject)
+
 
 ## add the number of trials and the percentage of
 ## correct ones using geom\_text()
 
-p1 + geom_text(y=0,aes(label=n.corr)) +
-    geom_text(y=60000,aes(label=round(perc.corr,2)),angle=90) +
+p1 + geom_text(y=0,aes(label=n.corr),angle=90,size=3) +
+    geom_text(y=60000,aes(label=round(perc.corr,2)),angle=90,size=3) +
     scale_y_continuous(limits=c(0,75000))
 
 
-
-p1 + geom_text(y=0, aes(label=n.corr)) +
+require(stringr)
+p1 + geom_text(y=0, aes(label=n.corr),size=4) +
     geom_text(y=70000,
               aes(label=str_pad(round(perc.corr,2),width = 4,side = "right",pad=0)),
-              angle=90,hjust=1) +
+              angle=90,hjust=1,size=4) +
     scale_y_continuous(limits=c(0,70000))
 
 
@@ -115,6 +128,8 @@ ztest(rnorm(100,mean=10,sd=2),x.sd=2,mu=10)["pval"]
 ztest(rnorm(100,mean=10,sd=2),x.sd=2,mu=10)["diff"]
 ztest(rnorm(100,mean=10,sd=2),x.sd=2,mu=10)[c("pval","diff")]
 
+
+
 ## Now do the sampling and the testing 1000 times, what would be the
 ## number of statistically significant results? Use replicate()
 ## (which is a wrapper of tapply()) or a for() loop! Record at
@@ -136,7 +151,7 @@ res <- matrix(numeric(2000),ncol=2)
 for(i in seq.int(1000)){
     res[i,] <- ztest(rnorm(100,mean=10,sd=2),x.sd=2,mu=10)[c("pval","diff")] }
 res <- as.data.frame(res)
-names(res) <- c("pval","diff")
+xnames(res) <- c("pval","diff")
 
 ## Use table() to count the p-vals below 0.05.
 table(res$pval < 0.05)
@@ -242,7 +257,9 @@ t.test(data$TTime[data$Subject==1 & data$testid=="test2"] ~
 ## use the following code to do the test on every subset Subject
 ## and testid, try to figure what is happening in each step:
 
-data.l <- split(data,list(data$Subject,data$testid),drop=T)
+data$Stim.Type <- droplevels(data$Stim.Type)
+
+data.l <- split(data,list(data$Subject,data$testid))
 
 tmp.l <- lapply(data.l,function(x) {
     if(min(table(x$Stim.Type)) < 5) return(NULL)
@@ -307,7 +324,10 @@ res <- Reduce(rbind,tmp.l)
 
 ggplot(res,aes(x=perc.corr,y=mean.group.1 - mean.group.2)) +
     geom_point() +
-    geom_smooth()
+    geom_smooth(se=F) +
+    geom_smooth(data = res[res$perc.corr < 0.65,],se=F, method="lm",colour="black") +
+    geom_smooth(data = res[res$perc.corr > 0.65,],se=F, method="lm",colour="black") +
+    annotate("rect",xmin=0.65,xmax=Inf,ymin=-Inf,ymax = Inf,fill="blue",alpha=0.1) + annotate("segment",x=0.65,xend=0.65,y=-20000,yend=-5000,size=3,arrow=arrow())
 
 
 ########################################################################
@@ -322,5 +342,6 @@ ggplot(data,aes(x=testid,y=TTime)) +
     scale_y_continuous(limits=c(0,75000)) +
     facet_wrap(~Subject)
 
+tdf <- data.frame(x=runif(1000),y=runif(1000))
 
-
+ggplot(tdf,aes(x=x,y=y)) + stat_quantile()

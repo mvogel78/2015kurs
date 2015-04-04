@@ -2,6 +2,13 @@ setwd("/media/mandy/Volume/transcend/mpicbs/2015kurs/session4")
 
 ## load the data (file: session4data.rdata)
 ## make a new summary data frame (per subject and time) containing:
+
+require(dplyr)
+load("session4data.rdata")
+
+data2 <- group_by(data,Subject,testid) %>%
+    summarise(n.trial = n())
+
 ###### the number of trials
 ###### the number correct trials (absolute and relative)
 ###### the mean TTime and the standard deviation of TTime
@@ -11,6 +18,12 @@ setwd("/media/mandy/Volume/transcend/mpicbs/2015kurs/session4")
 
 
 
+
+%>%
+
+group_by()
+
+summarise()
 
 
 
