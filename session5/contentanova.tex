@@ -1,13 +1,4 @@
-\begin{frame}
-\titlepage
-\end{frame}
-
-\begin{frame}{Overview}
-  \tableofcontents
-\end{frame}
-
 \section{Modelling}
-
 \subsection{Choosing a Method}
 \begin{frame}\frametitle{Choosing the appropriate method}
 It is essential, therefore, that you can answer the following questions:
@@ -221,9 +212,7 @@ From: Michael Crawley, The R-Book
 
 \end{frame}
 
-\section{Sums of Squares}
-\subsection{Total Sum of Squares}
-
+\subsection{Sums of Squares}
 \begin{frame}\frametitle{Total Sum of Squares}
 \tikzstyle{na} = [baseline=-.5ex]
   \begin{itemize}
@@ -272,9 +261,6 @@ $$ SSY = \sum(y-\bar{y})^2$$
         \end{tikzpicture}
 \end{frame}
 
-
-
-\subsection{Group Means}
 \begin{frame}\frametitle{Group Means}
   \begin{itemize}
   \item now instead of fitting the overall mean, let us fit the individual garden means
@@ -342,7 +328,7 @@ garden & a & b \\
 \begin{frame}\frametitle{Error Sum of Squares}
 \emph{ When the means are significantly different then the sum of squares computed from the individual garden means will be smaller than the sum of squares computed from the overall mean. }
   \begin{itemize}
-  \item we define the new sum of squares as the \emph{error sum of squares} (error in the sense of 'redidual')
+  \item we define the new sum of squares as the \emph{error sum of squares} (error in the sense of 'residual')
 $$ SSE = \sum(y_{garden A}-\bar{y}_{garden A})^2+\sum(y_{garden B}-\bar{y}_{garden B})^2$$
   \end{itemize}
 \end{frame}
@@ -369,9 +355,6 @@ $$SSY=SSE+SSA$$ where
 
   \end{itemize}
 \end{frame}
-
-
-\subsection{ANOVA table}
 
 \begin{frame}\frametitle{ANOVA table}
 \begin{center}
@@ -548,167 +531,3 @@ Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’
 \end{tikzpicture}
 \end{frame}
 
-%% \begin{frame}
-%% \frametitle{Rigid body dynamics}
-%% \tikzstyle{na} = [baseline=-.5ex]
-
-%% \begin{equation*}
-%% \vec{a}_p = \vec{a}_o+\frac{{}^bd^2}{dt^2}\vec{r} +
-%%         \tikz[baseline]{
-%%             \node[anchor=base] (t1)
-%%             {$ 2\vec{\omega}_{ib}\times\frac{{}^bd}{dt}\vec{r}$};
-%%         } +
-%%         \tikz[baseline]{
-%%             \node[ellipse,anchor=base,path fading=fade inside] (t2)
-%%             {$\vec{\alpha}_{ib}\times\vec{r}$};
-%%         } +
-%%         \tikz[baseline]{
-%%             \node[fill=green!20,anchor=base] (t3)
-%%             {$\vec{\omega}_{ib}\times(\vec{\omega}_{ib}\times\vec{r})$};
-%%         }
-%% \end{equation*}
-
-%% \begin{tikzpicture}[overlay]
-%% \path[clip] (current page.north west) rectangle (current page.south east);
-%% \path<2>[fill=black,even odd rule,path fading=fade inside]
-%%     (t1) circle (10cm) (t1) circle (1cm);
-
-%% \path<3>[fill=black,even odd rule,path fading=fade inside]
-%%     (t2) circle (10cm) (t2) circle (1cm);     
-%% \end{tikzpicture}
-%% \end{frame}
-
-
-%% \begin{frame}
-%% \frametitle{Rigid body dynamics 2}
-
-%% \tikzstyle{na} = [baseline=-.5ex]
-
-%% \begin{itemize}[<+-| alert@+>]
-%%     \item Coriolis acceleration
-%%         \tikz[na] \node[coordinate] (n1) {};
-%% \end{itemize}
-
-%% % Below we mix an ordinary equation with TikZ nodes. Note that we have to
-%% % adjust the baseline of the nodes to get proper alignment with the rest of
-%% % the equation.
-%% \begin{equation*}
-%% \vec{a}_p = \vec{a}_o+\frac{{}^bd^2}{dt^2}\vec{r} +
-%%         \tikz[baseline]{
-%%             \node[fill=blue!20,anchor=base] (t4)
-%%             {$ 2\vec{\omega}_{ib}\times\frac{{}^bd}{dt}\vec{r}$};
-%%         } +
-%%         \tikz[baseline]{
-%%             \node[fill=red!20, ellipse,anchor=base] (t5)
-%%             {$\vec{\alpha}_{ib}\times\vec{r}$};
-%%         } +
-%%         \tikz[baseline]{
-%%             \node[fill=green!20,anchor=base] (t6)
-%%             {$\vec{\omega}_{ib}\times(\vec{\omega}_{ib}\times\vec{r})$};
-%%         }
-%% \end{equation*}
-
-%% \begin{itemize}[<+-| alert@+>]
-%%     \item Transversal acceleration
-%%         \tikz[na]\node [coordinate] (n2) {};
-%%     \item Centripetal acceleration
-%%         \tikz[na]\node [coordinate] (n3) {};
-%% \end{itemize}
-
-%% % Now it's time to draw some edges between the global nodes. Note that we
-%% % have to apply the 'overlay' style.
-%% \begin{tikzpicture}[overlay]
-%%         \path[->]<1-> (n1) edge [bend left] (t4);
-%%         \path[->]<2-> (n2) edge [bend right] (t5);
-%%         \path[->]<3-> (n3) edge [out=0, in=-90] (t6);
-%% \end{tikzpicture}
-%% \end{frame}
-
-
-
-%% \begin{frame}{Progress last week}
-%%   utf8 check: ¡holla! – Tschüß – À bientôt
-%%   \begin{itemize}
-%%     \item list
-%%     \item 2nd list
-%%   \end{itemize}
-%% \end{frame}
-
-
-%% \begin{frame}{test}
-%% 	Main text still in Gill Sans
-%% 	$$\frac{f}{f^4}$$
-	
-%% 	But math is now different
-%% 	\Large
-%% 	$$\frac{f^2}{f^4}$$
-%% \end{frame}
-
-
-%% \section{Results}
-
-%% \begin{frame}{blocks}
-%%   \begin{huge}Big Font\end{huge}  \emph{emphasize}
-%%   \begin{block}{Block Title}
-%%     here we go,  \textbf{bold face}
-%%   \end{block}
-  
-%%   \begin{exampleblock}{Example Block Title}
-%%     here we go, \textit{italic face}
-%%   \end{exampleblock}
-  
-%%   \begin{alertblock}{Alert Block Title}
-%%     here we go, \texttt{typwritter face}
-%%     \begin{itemize}
-%%       \item list with marker of 70\% red
-%%     \end{itemize}
-
-%%   \end{alertblock}
-%% \end{frame}
-
-
-%% \begin{frame}{Next Steps (mostly like last  week)}  
-%%   \begin{itemize}
-%%     \item lots of items
-%%     \item even more
-%%   \end{itemize}
-
-%% \end{frame}
-
-%% \begin{frame}{Columns}
-%%   \begin{columns}[T]
-%%     \begin{column}{0.6\textwidth}
-%%       \textbf{Here the image}
-%%       \begin{figure}
-%% %%        \includegraphics[width=\textwidth]{amu}
-%%         \caption{here goes the logo again}
-%%       \end{figure}
-%%     \end{column}
-%%     \begin{column}{0.4\textwidth}
-%%       \textbf{Here the items}
-%%       \begin{itemize}
-%%         \item items
-%%         \item over
-%%         \item items
-%%       \end{itemize}
-%%     \end{column}
-%%   \end{columns}
-%% \end{frame}
-
-
-%% \section{References}
-
-%% \begin{frame}[plain]{References}
-%% \begin{thebibliography}{xxxxxxxx}
-%%   \bibitem{james}[James et al.] On Measurement Of Qubits
-%%   \newblock D. James et al., Phys. Rev. A 64, 05/2312 (2001)
-%%   \bibitem{stevenson}[Stevenson et al.] A semiconductor source of triggered entangled photon pairs
-%%   \newblock R. M. Stevenson et al., Nature 439, 179-182 (2006)
-
-%%   \bibitem{salter}[Salter et al.] An entangled-light-emitting diode
-%%   \newblock C. L. Salter et al., Nature 465, 594–597 (2010)
-%%   \bibitem{wootters}[Wootters et al.] Entanglement of Formation of an Arbitrary State of Two Qubits
-%%   \newblock W. K. Wootters et al., Phys. Rev. Lett. 80, 2245-2248 (1998)
-%%  \end{thebibliography}
-%% \end{frame}
-%% \end

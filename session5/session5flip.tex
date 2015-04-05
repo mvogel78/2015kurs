@@ -144,6 +144,26 @@
 %%%%%%%%%%%%%%%%%%%%%%%%
 
 %% It's much nicer to have all the content in a separate file
+
+
+\AtBeginSection{
+  \begin{frame}<beamer>[allowframebreaks,t]{Table of Contents}
+    \tableofcontents[currentsection]
+  \end{frame}}
+
+
+\begin{frame}
+\titlepage
+\end{frame}
+
+\begin{frame}{Overview}
+  \tableofcontents
+\end{frame}
+
+
+\include{contentlastweek}
 \include{contentanova}
+\include{contentggplot}
+
 
 \end{document}

@@ -329,19 +329,3 @@ ggplot(res,aes(x=perc.corr,y=mean.group.1 - mean.group.2)) +
     geom_smooth(data = res[res$perc.corr > 0.65,],se=F, method="lm",colour="black") +
     annotate("rect",xmin=0.65,xmax=Inf,ymin=-Inf,ymax = Inf,fill="blue",alpha=0.1) + annotate("segment",x=0.65,xend=0.65,y=-20000,yend=-5000,size=3,arrow=arrow())
 
-
-########################################################################
-############## Exercises stats ggplot2    ##############################
-########################################################################
-
-
-require(Hmisc)
-ggplot(data,aes(x=testid,y=TTime)) +
-    stat_summary(fun.data="mean_se",mult=1.96,geom="pointrange") +
-    stat_bin(y=0,aes(label=..count..),geom="text",position="identity") +
-    scale_y_continuous(limits=c(0,75000)) +
-    facet_wrap(~Subject)
-
-tdf <- data.frame(x=runif(1000),y=runif(1000))
-
-ggplot(tdf,aes(x=x,y=y)) + stat_quantile()
