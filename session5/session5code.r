@@ -205,7 +205,7 @@ ggplot(data,aes(x=seq_along(TTime),y=TTime/max(data$TTime))) +
 
 
 ## stat_density/stat_function
-ggplot(data,aes(x=TTime)) +
+p1 <- ggplot(data,aes(x=TTime)) +
     geom_density() +
     stat_function(fun=dnorm,
                   args = list(mean=mean(data$TTime),
@@ -277,6 +277,38 @@ ggsave("img/sum2.png")
 ########################################################################
 
 
+ggplot(data,aes(x=EC1,y=Duration)) +
+    stat_summary(fun.data="mean_se",geom = "pointrange") +
+    annotate(geom="text",x=3,y=15000,label="here we are") +
+    annotate(geom="segment",x = 2.5,xend = 3.5, y = 15000,yend=16000,colour="red") +
+    annotate(geom="rect",xmin = 4.8,xmax = 6.2, ymin = 19100,ymax=20100,fill="red",alpha=0.3)
+
+## table
+require(gridExtra)
+
+my.table <- tableGrob(as.data.frame(table(data$EC1)))
+
+ggplot(data,aes(x=EC1,y=Duration)) +
+    stat_summary(fun.data="mean_se",geom = "pointrange") +
+    annotation_custom(xmin = 1, xmax = 3, ymin = 18000, ymax = 20000,
+                      grob = my.table) +
+    ylim(13000,20000)
+
+
+my.subplot <- ggplotGrob(
+    p1 +
+        theme(plot.background=element_rect(fill="transparent",
+                                           colour="transparent"),
+              panel.background=element_rect(fill="transparent"),
+              panel.grid=element_blank()))
+
+ggplot(data,aes(x=EC1,y=Duration)) +
+    stat_summary(fun.data="mean_se",geom = "pointrange") +
+    annotation_custom(xmin = 1, xmax = 3, ymin = 18000, ymax = 20000,
+                      grob = my.table) +
+    annotation_custom(xmin = 4, xmax = 6, ymin = 13000, ymax = 18000,
+                      grob = my.subplot) +
+    ylim(13000,20000)
 
 
 ########################################################################
