@@ -542,7 +542,7 @@ Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’
 
 
 
-\begin{frame}[allowframebreaks,fragile]\frame{Exercises}
+\begin{frame}[allowframebreaks,fragile]\frametitle{Exercises - Solutions}
   \begin{enumerate}
   \item Look at the help of the TukeyHSD function. What is its purpose? 
   \item Execute the code of the example near the end of the help page, interpret the results!
@@ -577,6 +577,11 @@ Placebo-Drug.B   -3.39  -6.937542384  0.1575424 0.0654726
 \begin{verbatim}
 > ggplot(datalong,aes(x=ind,y=values)) + 
 +        geom_boxplot()  
+\end{verbatim}
+\begin{center}
+\includegraphics[width=10cm]{img/aovgr1.png}
+\end{center}
+\begin{verbatim}
 > granovagg.1w(datalong$values,group = datalong$ind)
 
 By-group summary statistics for your input data (ordered by group means)
@@ -614,6 +619,9 @@ Multiple R-squared:  0.4668,	Adjusted R-squared:  0.4223
 F-statistic:  10.5 on 3 and 36 DF,  p-value: 4.173e-05
 
 \end{verbatim}
+\begin{center}
+\includegraphics[width=10cm]{img/aovgr2.png}
+\end{center}
   \end{enumerate}
 \end{frame}
 
