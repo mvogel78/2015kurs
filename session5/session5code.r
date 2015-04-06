@@ -1,8 +1,11 @@
 setwd("/media/mandy/Samsung_T1/mpicbs/2015kurs/session5/")
 require(ggplot2)
 require(dplyr)
+require(ez)
+require(reshape2)
 
 load("../session4/session4data.rdata")
+data$Duration <- as.numeric(data$Duration)
 
 ######################################################################
 ####################### Exercises  ###################################
@@ -162,6 +165,40 @@ polygon(c(x,rev(x)),c(df(x,1,12),rep(0,length(x))),col="darkgreen")
 
 abline(v=15.75)
 
+## anova syntax R
+mm <- lm(ozone ~ garden, data=oneway)
+anova(mm)
+
+m2 <- aov(ozone ~ garden, data=oneway)
+summary(m2)
+
+########################################################################
+######################## Exer Anova    #################################
+########################################################################
+
+
+## install and load the granovaGG package (a package for visualization
+## of ANOVAs)
+require(granovaGG)
+
+## load the arousal data frame and use the stack()} command to bring
+## the data in the long form.
+data(arousal)
+datalong <- stack(arousal)
+
+## Do a anova analysis. Is there a difference at least 2 of the groups?
+m1 <- aov(values ~ ind, data = datalong)
+summary(m1)
+
+## If indicated do a post-hoc test.
+TukeyHSD(m1)
+
+## Visualize your results
+ggplot(datalong,aes(x=ind,y=values)) + geom_boxplot()
+
+granovagg.1w(datalong$values,group = datalong$ind)
+
+granovagg.1w(arousal)
 ########################################################################
 ######################## stats ggplot2 #################################
 ########################################################################

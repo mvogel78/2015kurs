@@ -393,7 +393,7 @@ Total & $55.5$ & $13$ & & \\   \hline
 
 \begin{frame}[fragile]\frametitle{ANOVA in R}
   \begin{itemize}
-  \item in R we use the \texttt{lm()} command and
+  \item in R we use the \texttt{lm()} or the \texttt{aov()} command and
   \item the formula syntax \texttt{a \sim  b}
   \item we assign this to an variable
  \end{itemize}
@@ -440,7 +440,6 @@ F-statistic: 15.75 on 1 and 12 DF,  p-value: 0.001864
 \end{verbatim}
 \end{frame}
 
-
 \begin{frame}[fragile]\frametitle{ANOVA in R}
 \footnotesize
 \begin{verbatim}
@@ -455,6 +454,59 @@ Residuals 12   24.0     2.0
 Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
 \end{verbatim}
 \end{frame}
+
+
+
+\begin{frame}[fragile,allowframebreaks]\frametitle{ANOVA in R}
+\footnotesize
+\begin{verbatim}
+> m2 <- aov(ozone ~ garden, data=oneway)
+> m2
+Call:
+   aov(formula = ozone ~ garden, data = oneway)
+
+Terms:
+                garden Residuals
+Sum of Squares    31.5      24.0
+Deg. of Freedom      1        12
+
+Residual standard error: 1.414214
+Estimated effects may be unbalanced
+> summary(m2)
+            Df Sum Sq Mean Sq F value  Pr(>F)   
+garden       1   31.5    31.5   15.75 0.00186 **
+Residuals   12   24.0     2.0                   
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+> summary.lm(m2)
+
+Call:
+aov(formula = ozone ~ garden, data = oneway)
+
+Residuals:
+   Min     1Q Median     3Q    Max 
+    -2     -1      0      1      2 
+
+Coefficients:
+            Estimate Std. Error t value Pr(>|t|)    
+(Intercept)   7.0000     0.5345  13.096 1.82e-08 ***
+gardenb       3.0000     0.7559   3.969  0.00186 ** 
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 1.414 on 12 degrees of freedom
+Multiple R-squared:  0.5676,	Adjusted R-squared:  0.5315 
+F-statistic: 15.75 on 1 and 12 DF,  p-value: 0.001864
+
+> summary(m2)
+            Df Sum Sq Mean Sq F value  Pr(>F)   
+garden       1   31.5    31.5   15.75 0.00186 **
+Residuals   12   24.0     2.0                   
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+\end{verbatim}
+\end{frame}
+
 
 
 \begin{frame}\frametitle{ANOVA Assumptions}
@@ -478,56 +530,90 @@ Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’
 \end{itemize}
 \end{frame}
 
-\begin{frame}\frametitle{Repeated Measures ANOVA}
-\tikzstyle{na} = [baseline=-.5ex]
-\begin{itemize}
-    \item main effect
-        \tikz[na] \node[coordinate] (main) {};
-    \item interaction between treatment and time
-        \tikz[na]\node [coordinate] (ia) {};
-\end{itemize}
-  \begin{equation*}
-    y_{hij} = 
-    \tikz[baseline]{
-      \node[fill=blue!20, anchor=base] (beta)
-           {$\beta_h$};} + 
-    \tikz[baseline]{
-      \node[fill=red!20,anchor=base] (gamma)
-           {$\gamma_{hj}$};} + 
-    \tikz[baseline]{
-      \node[fill=yellow!40, anchor=base] (U)
-           {$U_{hi}$};} + 
-    \tikz[baseline]{
-      \node[fill=green!20, anchor=base] (Z)
-           {$Z_{hij}$};}    
-  \end{equation*}
 
-\begin{itemize}
-    \item mutually independent random effects for units
-        \tikz[na]\node [coordinate] (random) {};
-    \item mutually independent measurment errors
-        \tikz[na]\node [coordinate] (error) {};
-\end{itemize}
+\begin{frame}\frame{Exercises}
+  \begin{enumerate}
+  \item Look at the help of the TukeyHSD function. What is its purpose? 
+  \item Execute the code of the example near the end of the help page, interpret the results!
+  \item install and load the granovaGG package (a package for visualization of ANOVAs), load the \texttt{arousal} data frame and use the \texttt{stack()} command to bring the data in the long form. Do a anova analysis. Is there a difference at least 2 of the groups? If indicated do a post-hoc test.
+  \item Visualize your results
+  \end{enumerate}
+\end{frame}
 
-\begin{tikzpicture}[overlay]
-        \path[->,blue,thick]<1-> (main) edge [out=0,in=90] (beta);
-        \path[->,red,thick]<2-> (ia) edge [out=0,in=90] (gamma);
-        \path[->,yellow,thick]<3-> (random) edge [out=0, in=-90] (U);
-        \path[->,green,thick]<4-> (error) edge [out=0, in=-90] (Z);
-\end{tikzpicture}
 
-\begin{tikzpicture}[overlay]
-\path[clip] (current page.north west) rectangle (current page.south east);
-\path<2>[fill=black,even odd rule,path fading=fade inside]
-    (beta) circle (10cm) (beta) circle (0.7cm);
-\path<3>[fill=black,even odd rule,path fading=fade inside]
-    (gamma) circle (10cm) (gamma) circle (0.7cm);     
-\path<4>[fill=black,even odd rule,path fading=fade inside]
-    (U) circle (10cm) (U) circle (0.7cm);     
-\path<5>[fill=black,even odd rule,path fading=fade inside]
-    (Z) circle (12cm) (Z) circle (0.7cm);     
-\path<6>[fill=black,even odd rule,path fading=fade inside]
-    (Z) circle (12cm) (Z) circle (11.9cm);     
-\end{tikzpicture}
+
+\begin{frame}[allowframebreaks,fragile]\frame{Exercises}
+  \begin{enumerate}
+  \item Look at the help of the TukeyHSD function. What is its purpose? 
+  \item Execute the code of the example near the end of the help page, interpret the results!
+  \item install and load the granovaGG package (a package for visualization of ANOVAs), load the \texttt{arousal} data frame and use the \texttt{stack()} command to bring the data in the long form. Do a anova analysis. Is there a difference at least 2 of the groups? If indicated do a post-hoc test.\scriptsize
+\begin{verbatim}
+> require(granovaGG)
+> data(arousal)
+> datalong <- stack(arousal)
+> m1 <- aov(values ~ ind, data = datalong)
+> summary(m1)
+            Df Sum Sq Mean Sq F value   Pr(>F)    
+ind          3  273.4   91.13   10.51 4.17e-05 ***
+Residuals   36  312.3    8.68                     
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+> TukeyHSD(m1)
+  Tukey multiple comparisons of means
+    95% family-wise confidence level
+
+Fit: aov(formula = values ~ ind, data = datalong)
+
+$ind
+                  diff           lwr        upr     p adj
+Drug.A.B-Drug.A   3.54  -0.007542384  7.0875424 0.0506601
+Drug.B-Drug.A    -0.45  -3.997542384  3.0975424 0.9860554
+Placebo-Drug.A   -3.84  -7.387542384 -0.2924576 0.0296168
+Drug.B-Drug.A.B  -3.99  -7.537542384 -0.4424576 0.0223986
+Placebo-Drug.A.B -7.38 -10.927542384 -3.8324576 0.0000137
+Placebo-Drug.B   -3.39  -6.937542384  0.1575424 0.0654726
+\end{verbatim}\normalsize
+  \item Visualize your results\scriptsize
+\begin{verbatim}
+> ggplot(datalong,aes(x=ind,y=values)) + 
++        geom_boxplot()  
+> granovagg.1w(datalong$values,group = datalong$ind)
+
+By-group summary statistics for your input data (ordered by group means)
+     group group.mean trimmed.mean contrast variance standard.deviation
+4  Placebo      20.43        20.30    -3.65     5.83               2.41
+3   Drug.B      23.82        23.85    -0.26     7.50               2.74
+1   Drug.A      24.27        24.45     0.19     7.89               2.81
+2 Drug.A.B      27.81        27.52     3.73    13.49               3.67
+  group.size
+4         10
+3         10
+1         10
+2         10
+
+Below is a linear model summary of your input data
+
+Call:
+lm(formula = score ~ group, data = owp$data)
+
+Residuals:
+   Min     1Q Median     3Q    Max 
+-5.910 -2.015 -0.075  1.885  6.290 
+
+Coefficients:
+              Estimate Std. Error t value Pr(>|t|)    
+(Intercept)    24.2700     0.9314  26.057  < 2e-16 ***
+groupDrug.A.B   3.5400     1.3172   2.688  0.01083 *  
+groupDrug.B    -0.4500     1.3172  -0.342  0.73461    
+groupPlacebo   -3.8400     1.3172  -2.915  0.00608 ** 
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 2.945 on 36 degrees of freedom
+Multiple R-squared:  0.4668,	Adjusted R-squared:  0.4223 
+F-statistic:  10.5 on 3 and 36 DF,  p-value: 4.173e-05
+
+\end{verbatim}
+  \end{enumerate}
 \end{frame}
 
