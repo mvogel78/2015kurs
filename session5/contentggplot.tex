@@ -97,7 +97,7 @@ trimed.mean <- function(x){
 \end{center}
 \end{frame}
 
-\subsection{Annotation}
+\subsection{annotations}
 \begin{frame}[allowframebreaks,fragile]\frametitle{\texttt{annotation()}}
   \begin{itemize}
   \item creates an annotation layer (a geometry)
@@ -152,3 +152,59 @@ trimed.mean <- function(x){
 \end{center}
 \end{frame}
 
+\begin{frame}\frametitle{ggplot Exercises}
+  \begin{enumerate}
+  \item use \texttt{stat\_summary()} to plot the mean inclusive the 95 percent confidence interval per time (testid) and use \texttt{stat\_bin()} to add the number of observations, create one facet per subject
+  \item add a new column to the data data frame containing a 1 if Stim.Type equals hit and 0 otherwise, now use \texttt{stat\_summary()} to plot a line (time on the x-axis and the percentage of correct hits on the y-axis. Hint: you have to transform testid into a numeric variable.
+  \item now colour the background of the time points test1 and test2 different from the training time. use \texttt{annotate()} and label the x-axis correct
+  \item add two arrows indicating the minimal and maximal percentage of correct answers, use segment in combination with \texttt{arrow=arrow()} (load the gridExtra package)
+  \end{enumerate}
+\end{frame}
+
+
+\begin{frame}[allowframebreaks,fragile]\frametitle{ggplot Exercises}
+  \begin{enumerate}
+  \item use \texttt{stat\_summary()} to plot the mean inclusive the 95 percent confidence interval per time (testid) and use \texttt{stat\_bin()} to add the number of observations, create one facet per subject
+\begin{verbatim}
+> ggplot(data,aes(x=testid,y=TTime)) +
++     stat_summary(fun.data="mean_se",mult=1.96,geom="pointrange") +
++     stat_bin(y=0,aes(label=..count..),geom="text") +
++     scale_y_continuous(limits=c(0,75000)) +
++     facet_wrap(~Subject)
+\end{verbatim}
+\begin{center}
+  \includegraphics[width=8cm]{statsumexer.png}
+\end{center}
+  \item add a new column to the data data frame containing a 1 if Stim.Type equals hit and 0 otherwise, now use \texttt{stat\_summary()} to plot a line (time on the x-axis and the percentage of correct hits on the y-axis. Hint: you have to transform testid into a numeric variable.
+\begin{verbatim}
+> data$correct <- as.numeric(data$Stim.Type=="hit")
+> ggplot(data,aes(x=as.numeric(testid),y=correct)) +
++     stat_summary(fun.y="mean",geom="line")
+\end{verbatim}
+\begin{center}
+  \includegraphics[width=8cm]{statsumexer2.png}
+\end{center}
+  \item now colour the background of the time points test1 and test2 different from the training time. use \texttt{annotate()} and label the x-axis correct
+  \item add two arrows indicating the minimal and maximal percentage of correct answers, use segment in combination with \texttt{arrow=arrow()} (load the gridExtra package)
+\begin{verbatim}
+> require(gridExtra)
+> ggplot(data,aes(x=as.numeric(testid),y=correct)) +
++     stat_summary(fun.y="mean",geom="line") +
++     annotate("rect",xmin = 0.5,xmax = 1.5,
++              ymin = -Inf, ymax = Inf,
++              fill = "red", alpha = 0.5) +
++     annotate("rect",xmin = 9.5,xmax = 10.5,
++              ymin = -Inf, ymax = Inf,
++              fill = "red", alpha = 0.5) +
++     annotate("segment",
++              x=9,xend=9,
++              y=0.6,yend=0.55,size=3,arrow=arrow()) +
++     annotate("segment",
++              x=1,xend=1,
++              y=0.7,yend=0.75,size=3,arrow=arrow())
+\end{verbatim}
+\begin{center}
+  \includegraphics[width=6.5cm]{exerannot.png}
+\end{center}
+  \end{enumerate}
+\end{frame}

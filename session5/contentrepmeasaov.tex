@@ -1,0 +1,184 @@
+%% the independent variable more commonly referred to as the within-subjects factor.
+
+\subsection{Repeated Measures ANOVA}
+\begin{frame}\frametitle{Repeated Measures ANOVA (rma)}
+  \begin{itemize}
+  \item equivalent of the one-way ANOVA, but for related, not independent groups,  \item in that sense it is the extension of the dependent t-test: he same people are being measured more than once on the same dependent variable
+  \item here we will look at the simplest design of rma
+  \end{itemize}
+\end{frame}
+
+
+\begin{frame}\frametitle{Repeated Measures ANOVA (rma)}
+  \begin{itemize}
+  \item hypothesis of rma: $$\mu_1=\mu_2=\ldots =\mu_n$$
+  \item here we will look at the simplest design of rma
+  \item in this design the within group variance from above is splitted in variance caused by subject variability and the error variance (where in the anova from above we had only error) 
+  \end{itemize}
+\end{frame}
+
+
+\begin{frame}\frametitle{Repeated Measures ANOVA (rma)}
+So we have one more sum of sqares:
+  \begin{itemize}
+  \item SS_{Time}
+  \item SS_{within} 
+  \item SS_{Subject}
+  \item SS_{error}
+  \end{itemize}
+\end{frame}
+
+
+\begin{frame}[fragile, allowframebreaks]\frametitle{Example}\footnotesize
+\begin{verbatim}
+> xx
+  subject t1 t2 t3
+1       1 45 50 55
+2       2 42 42 45
+3       3 36 41 43
+4       4 39 35 40
+5       5 51 55 59
+6       6 44 49 56
+> n <- 6
+> k <- 3
+> require(reshape2)
+> xx <- melt(xx,id.vars = "subject")  
+> ## Sum of Squares time
+> (tmp <- aggregate(value ~ variable,FUN = "mean",data=xx))
+  variable    value
+1       t1 42.83333
+2       t2 45.33333
+3       t3 49.66667
+> (sstime <- sum(6*(tmp$value - mean(xx$value))**2))
+[1] 143.4444
+> ## sum of squares within
+> (xx <- xx %>% group_by(variable) %>% mutate(gr.mean=mean(value)))
+Source: local data frame [18 x 4]
+Groups: variable
+
+   subject variable value  gr.mean
+1        1       t1    45 42.83333
+2        2       t1    42 42.83333
+3        3       t1    36 42.83333
+4        4       t1    39 42.83333
+5        5       t1    51 42.83333
+6        6       t1    44 42.83333
+7        1       t2    50 45.33333
+8        2       t2    42 45.33333
+9        3       t2    41 45.33333
+10       4       t2    35 45.33333
+11       5       t2    55 45.33333
+12       6       t2    49 45.33333
+13       1       t3    55 49.66667
+14       2       t3    45 49.66667
+15       3       t3    43 49.66667
+16       4       t3    40 49.66667
+17       5       t3    59 49.66667
+18       6       t3    56 49.66667
+> (ssw <- sum((xx$value - xx$gr.mean)**2))
+[1] 715.5
+> ## sum of squares sub
+> (sub.xx <- xx %>% group_by(subject) %>% summarise(sub.mean=mean(value)))
+Source: local data frame [6 x 2]
+
+  subject sub.mean
+1       1 50.00000
+2       2 43.00000
+3       3 40.00000
+4       4 38.00000
+5       5 55.00000
+6       6 49.66667
+> (sssub <- k*sum((sub.xx$sub.mean - mean(xx$value))**2))
+[1] 658.2778
+> ## sum of squares error
+> (sserror <- ssw - sssub)
+[1] 57.22222
+> ## ssw
+> require(dplyr)
+> (xx <- xx %>% group_by(variable) %>% mutate(gr.mean=mean(value)))
+Source: local data frame [18 x 4]
+Groups: variable
+
+   subject variable value  gr.mean
+1        1       t1    45 42.83333
+2        2       t1    42 42.83333
+3        3       t1    36 42.83333
+4        4       t1    39 42.83333
+5        5       t1    51 42.83333
+6        6       t1    44 42.83333
+7        1       t2    50 45.33333
+8        2       t2    42 45.33333
+9        3       t2    41 45.33333
+10       4       t2    35 45.33333
+11       5       t2    55 45.33333
+12       6       t2    49 45.33333
+13       1       t3    55 49.66667
+14       2       t3    45 49.66667
+15       3       t3    43 49.66667
+16       4       t3    40 49.66667
+17       5       t3    59 49.66667
+18       6       t3    56 49.66667
+> (ssw <- sum((xx$value - xx$gr.mean)**2))
+[1] 715.5
+> ## sssub
+> (sub.xx <- xx %>% group_by(subject) %>% summarise(sub.mean=mean(value)))
+Source: local data frame [6 x 2]
+
+  subject sub.mean
+1       1 50.00000
+2       2 43.00000
+3       3 40.00000
+4       4 38.00000
+5       5 55.00000
+6       6 49.66667
+> (sssub <- k*sum((sub.xx$sub.mean - mean(xx$value))**2))
+[1] 658.2778
+> ## sserror
+> (sserror <- ssw - sssub)
+[1] 57.22222
+\end{verbatim}
+\end{frame}
+
+
+\begin{frame}[fragile, allowframebreaks]\frametitle{Example}
+  \begin{itemize}
+  \item now it is ease to calculate the meas squares and the F statistic
+  \end{itemize}\footnotesize
+\begin{verbatim}
+> ## mean squares
+> mstime <- sstime/(k-1)
+> mserror <- sserror/((n-1)*(k-1))
+> F <- mstime/mserror
+> (mstime <- sstime/(k-1))
+[1] 71.72222
+> (mserror <- sserror/((n-1)*(k-1)))
+[1] 5.722222
+> (F <- mstime/mserror)
+[1] 12.53398
+> pf(F,k-1,((n-1)*(k-1)))
+[1] 0.9981144
+> 1-pf(F,k-1,((n-1)*(k-1)))
+[1] 0.001885591
+\end{verbatim}
+\end{frame}
+
+\begin{frame}[fragile, allowframebreaks]\frametitle{Example}
+\begin{verbatim}
+> require(ez)
+> xx <- as.data.frame(xx)
+> (an <- ezANOVA(data=xx,dv = value,wid= subject, within = variable))
+Warnung: Converting "subject" to factor for ANOVA.
+$ANOVA
+    Effect DFn DFd        F           p p<.05       ges
+2 variable   2  10 12.53398 0.001885591     * 0.1670008
+
+$`Mauchly's Test for Sphericity`
+    Effect         W         p p<.05
+2 variable 0.4335338 0.1879515      
+
+$`Sphericity Corrections`
+    Effect       GGe       p[GG] p[GG]<.05      HFe       p[HF] p[HF]<.05
+2 variable 0.6383796 0.008985215         * 0.760165 0.005284458         *
+
+\end{verbatim}
+\end{frame}

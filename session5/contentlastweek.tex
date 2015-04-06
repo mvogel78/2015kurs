@@ -86,7 +86,7 @@ sample estimates:
 \end{verbatim}
 \end{frame}
 
-\begin{frame}[fragile]\frametitle{Exercises - Solutions}
+\begin{frame}[fragile,allowframebreaks]\frametitle{Exercises - Solutions}
   \begin{itemize}
   \item make plots to visualize the results
   \end{itemize}\footnotesize
@@ -98,6 +98,9 @@ sample estimates:
 +    geom_boxplot(aes(fill=Stim.Type)) +
 +    facet_wrap(~testid)
 \end{verbatim}
+\begin{center}
+  \includegraphics[width=10cm]{boxplotfacets.png}
+\end{center}
 \end{frame}
 
 
@@ -147,8 +150,8 @@ ggplot(res,aes(x=perc.corr,y=mean.group.1 - mean.group.2)) +
     geom_smooth()
 \end{verbatim}
 \begin{center}
-  \includegraphics[width=10cm]{boxplotfacets.png}
-\end{center}
+  \includegraphics[width=10cm]{exerchypo.png}
+\end{center}  
 \end{frame}
 
 

@@ -14,19 +14,16 @@ data$Duration <- as.numeric(data$Duration)
 ## use a t-test to compare TTime according to Stim.Type,
 ## visualize it. What is the problem?
 
-t.test(data$TTime ~ data$Stim.Type)
 
-ggplot(data,aes(x=Stim.Type,y=TTime)) +
-    geom_boxplot()
+
+
 
 ## now do the same for Subject 1 on pre and post test (use filter()
 ## or indexing to get the resp. subsets)
 
-t.test(data$TTime[data$Subject==1 & data$testid=="test1"] ~
-       data$Stim.Type[data$Subject==1 & data$testid=="test1"])
 
-t.test(data$TTime[data$Subject==1 & data$testid=="test2"] ~
-       data$Stim.Type[data$Subject==1 & data$testid=="test2"])
+
+
 
 
 
@@ -57,23 +54,18 @@ res <- Reduce(rbind,tmp.l)
 
 ## plots
 
-ggplot(data,aes(x=testid,y=TTime)) +
-    geom_boxplot(aes(fill=Stim.Type)) +
-    facet_wrap(~Subject)
 
-ggsave("boxplotfacets.png")
 
-ggplot(data,aes(x=factor(Subject),y=TTime)) +
-    geom_boxplot(aes(fill=Stim.Type)) +
-    facet_wrap(~testid)
+
 
 
 ## how many tests have a statistically significant result?
-table(res$pval < 0.05)
 
-prop.table(table(res$pval < 0.05))
+
+
 
 ## Is there a tendency? What could be the next step?
+
 
 
 ## hypothesis: if the child tries to answer correctly it thinks about it 
@@ -109,7 +101,7 @@ ggplot(res,aes(x=perc.corr,y=mean.group.1 - mean.group.2)) +
     geom_smooth(data = res[res$perc.corr > 0.65,],se=F, method="lm",colour="black") +
     annotate("rect",xmin=0.65,xmax=Inf,ymin=-Inf,ymax = Inf,fill="blue",alpha=0.1) + annotate("segment",x=0.65,xend=0.65,y=-20000,yend=-5000,size=3,arrow=arrow())
 
-ggsave("img/exerchypo.png")
+
 
 
 ## Anova
@@ -176,6 +168,11 @@ summary(m2)
 ######################## Exer Anova    #################################
 ########################################################################
 
+## Look at the help of the TukeyHSD function. What is its purpose?
+## Execute the code of the example near the end of the help page,
+## interpret the results!
+
+
 
 ## install and load the granovaGG package (a package for visualization
 ## of ANOVAs)
@@ -183,22 +180,23 @@ require(granovaGG)
 
 ## load the arousal data frame and use the stack()} command to bring
 ## the data in the long form.
-data(arousal)
-datalong <- stack(arousal)
+
+
 
 ## Do a anova analysis. Is there a difference at least 2 of the groups?
-m1 <- aov(values ~ ind, data = datalong)
-summary(m1)
+
+
 
 ## If indicated do a post-hoc test.
-TukeyHSD(m1)
+
+
 
 ## Visualize your results
-ggplot(datalong,aes(x=ind,y=values)) + geom_boxplot()
 
-granovagg.1w(datalong$values,group = datalong$ind)
 
-granovagg.1w(arousal)
+
+
+
 ########################################################################
 ######################## stats ggplot2 #################################
 ########################################################################
@@ -356,19 +354,16 @@ ggplot(data,aes(x=EC1,y=Duration)) +
 ## confidence interval per time (testid)
 ## use stat_bin() to add the number of observations
 
-ggplot(data,aes(x=testid,y=TTime)) +
-    stat_summary(fun.data="mean_se",mult=1.96,geom="pointrange") +
-    stat_bin(y=0,aes(label=..count..),geom="text") +
-    scale_y_continuous(limits=c(0,75000)) +
-    facet_wrap(~Subject)
 
-ggsave("img/statsumexer.png")
 
-ggplot(data,aes(x=testid,y=TTime)) +
-    stat_summary(fun.data="mean_se",mult=1.96,geom="pointrange",aes(colour=EC1),position = position_dodge(width = 0.5)) +
-    stat_bin(y=0,aes(label=..count..),geom="text") +
-    scale_y_continuous(limits=c(0,75000)) +
-    facet_wrap(~Subject)
+
+
+
+
+
+
+
+
 
 
 ## add a new column to the data data frame containing a 1 if Stim.Type
@@ -376,34 +371,25 @@ ggplot(data,aes(x=testid,y=TTime)) +
 ## (time on the x-axis and the percentage of correct hits on the
 ## y-axis. Hint: you have to transform testid into a numeric variable.
 
-data$correct <- as.numeric(data$Stim.Type=="hit")
-
-ggplot(data,aes(x=as.numeric(testid),y=correct)) +
-    stat_summary(fun.y="mean",geom="line")
 
 
-ggsave("img/statsumexer2.png")
+
 
 ## now colour the background of the time points test1 and test2 different
 ## from the training time. use \texttt{annotate()}
 
-require(gridExtra)
-ggplot(data,aes(x=as.numeric(testid),y=correct)) +
-    stat_summary(fun.y="mean",geom="line") +
-    annotate("rect",xmin = 0.5,xmax = 1.5,
-             ymin = -Inf, ymax = Inf,
-             fill = "red", alpha = 0.5) +
-    annotate("rect",xmin = 9.5,xmax = 10.5,
-             ymin = -Inf, ymax = Inf,
-             fill = "red", alpha = 0.5) +
-    annotate("segment",
-             x=9,xend=9,
-             y=0.6,yend=0.55,size=3,arrow=arrow()) +
-    annotate("segment",
-             x=1,xend=1,
-             y=0.7,yend=0.75,size=3,arrow=arrow())
 
-ggsave("img/exerannot.png")
+
+
+
+
+
+
+
+
+
+
+
 
 
 #########################################################################
