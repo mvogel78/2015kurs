@@ -19,7 +19,7 @@
 \begin{frame}\frametitle{Statistical Model}
   \begin{itemize}
   \item in repeated measurement Anova $$Y_{ij} = \mu + time_j + S_j + (time\times S)_{ij} + Error_{ij}$$
-  \item assumes still thant errors have the same variances and
+  \item assumes still that errors have the same variances and
   \item covariances are the same
   \end{itemize}
 \end{frame}
@@ -30,7 +30,7 @@
   \begin{itemize}
   \item main hypothesis of rma: $$\mu_1=\mu_2=\ldots =\mu_n$$
   \item here we will look at the simplest design of rma
-  \item in this design the within group variance from above is splitted in variance caused by subject variability and the error variance (where in the anova from above we had only error) 
+  \item in this design the within group variance from above is splitted in variance caused by subject variability and the error variance
   \end{itemize}
 \end{frame}
 
@@ -161,10 +161,45 @@ $`Sphericity Corrections`
   \item the $p$ responses per individual related to the dependend variables in the model
   \item the treatment sum of squares and the error sum of squares from the univariate case last week extends to the $p \times p$ sum of squares and crossproducts
 $$ \mathbb{H}\equiv \mathbb{SSP_{H}}$$ and $$ \mathbb{E}\equiv \mathbb{SSP_{E}}$$
-  \item test statistics (Wilks $\Lambda$, Pillai trace, Hotelling-Lawley trace, Roys maximum root) for testing are based on the non-zero latent roots of $\mathbb{HE^{-1}}$ and attempt to capture how large $\mathbb{H}$ relative to $\mathbb{E}$
+  \item test statistics (Wilks $\Lambda$, Pillai trace, Hotelling-Lawley trace, Roys maximum root) for testing are based on the non-zero latent roots of $\mathbb{HE}^{-1}$ and attempt to capture how large $\mathbb{H}$ relative to $\mathbb{E}$
   \item all these statistics have transformations to F 
   \end{itemize}
 \end{frame}
+
+
+\begin{frame}\frametitle{MANOVA}
+  \begin{itemize}
+  \item the matrix $\mathbb{H}$ has the form
+    \begin{displaymath}
+      \mathbb{H} = \begin{pmatrix} 
+        \mathrm{SSH}_{11} & \mathrm{SPH}_{12} & \cdots & \mathrm{SPH}_{1p} \\    
+        \mathrm{SPH}_{12} & \mathrm{SSH}_{22} & \cdots & \mathrm{SPH}_{2p} \\    
+        \vdots & \vdots & \ddots & \vdots \\    
+        \mathrm{SPH}_{1p} & \mathrm{SPH}_{2p} & \cdots & \mathrm{SSH}_{pp} \\    
+      \end{pmatrix}
+    \end{displaymath}
+  \item where e.g. $\mathrm{SSH}_{22} = n \sum_{i=1}^k (\bar{y}_{i.2} - \bar{y}_{..2})^2$
+  \item and e.g. $\mathrm{SPH}_{12} = n \sum_{i=1}^k (\bar{y}_{i.1} - \bar{y}_{..1})(\bar{y}_{i.2} - \bar{y}_{..2})$
+  \end{itemize}
+\end{frame}
+
+
+\begin{frame}\frametitle{MANOVA}
+  \begin{itemize}
+  \item the matrix $\mathbb{E}$ has the form
+    \begin{displaymath}
+      \mathbb{H} = \begin{pmatrix} 
+        \mathrm{SSE}_{11} & \mathrm{SPE}_{12} & \cdots & \mathrm{SPE}_{1p} \\    
+        \mathrm{SPE}_{12} & \mathrm{SSE}_{22} & \cdots & \mathrm{SPE}_{2p} \\    
+        \vdots & \vdots & \ddots & \vdots \\    
+        \mathrm{SPE}_{1p} & \mathrm{SPE}_{2p} & \cdots & \mathrm{SSE}_{pp} \\    
+      \end{pmatrix}
+    \end{displaymath}
+  \item where e.g. $\mathrm{SSE}_{22} =  \sum_{i=1}^k \sum_{j=1}^n (y_{ij2} - \bar{y}_{i.2})^2$
+  \item and e.g. $\mathrm{SPE}_{12} = n \sum_{i=1}^k \sum_{j=1}^n (y_{ij1} - \bar{y}_{i.1})(y_{ij2} - \bar{y}_{i.2})$
+  \end{itemize}
+\end{frame}
+
 
 \begin{frame}\frametitle{Example Data}
   \begin{itemize}
@@ -230,6 +265,24 @@ $$ \mathbb{H}\equiv \mathbb{SSP_{H}}$$ and $$ \mathbb{E}\equiv \mathbb{SSP_{E}}$
     \includegraphics[width=11cm, height=7cm]{rma1.png}
   \end{center}
 \end{frame}
+
+\begin{frame}\frametitle{Basic multivariate model}
+  \begin{itemize}
+  \item design
+  \end{itemize}
+  \begin{center}
+    \begin{tabular}{c c c c c c c}
+      & & \multicolumn{5}{c}{Factor A (Repeated Measures)} \\ \hline
+      & Subjects & $A_1$ & $A_2$ & $\cdots$ & $A_p$ & \\
+      & $S_{1}$ & $( y_{11}$ & $y_{12}$ & $\cdots$ & $y_{1p} )$ & = $\mathbf{y^t_{1}}$ \\
+      & $S_{2}$ & $( y_{21}$ & $y_{22}$ & $\cdots$ & $y_{2p} )$ & = $\mathbf{y^t_{2}}$ \\
+      & $S_{3}$ & $( y_{31}$ & $y_{32}$ & $\cdots$ & $y_{3p} )$ & = $\mathbf{y^t_{3}}$ \\
+      & $\vdots$ & $\vdots$ & $\vdots$ &  & $ \vdots$ o& $ \vdots $ \\
+      & $S_{n}$ & $( y_{n1}$ & $y_{n2}$ & $\cdots$ & $y_{np} )$ & = $\mathbf{y^t_{n}}$ \\
+    \end{tabular}
+  \end{center}
+\end{frame}
+
 
 \begin{frame}[fragile]\frametitle{Basic multivariate model}
   \begin{itemize}
@@ -305,20 +358,21 @@ X7 14389.8 25693 19089.73 29977.2 42336.73 47268.93
 \end{frame}
 
 
-\begin{frame}[fragile]\frametitle{HE plot}
-  \begin{itemize}
-  \item  size of the (degenerate) ellipse for the intercept term relative to that for Error gives the strength of evidence for the difference between the sample means and the means under
-  \item the $\mathbb{H}$ ellipse extends outside the $\mathbb{E}$ ellipse (anywhere), this signals that $H_0$ is clearly rejected (for some linear combination of the response variables)
-  \end{itemize}
-  \begin{center}
-    \includegraphics[height=5cm]{rma2.png}
-  \end{center}
-\end{frame}
+%% \begin{frame}[fragile]\frametitle{HE plot}
+%%   \begin{itemize}
+%%   \item  size of the (degenerate) ellipse for the intercept term relative to that for Error gives the strength of evidence for the difference between the sample means and the means under
+%%   \item the $\mathbb{H}$ ellipse extends outside the $\mathbb{E}$ ellipse (anywhere), this signals that $H_0$ is clearly rejected (for some linear combination of the response variables)
+%%   \end{itemize}
+%%   \begin{center}
+%%     \includegraphics[height=5cm]{rma2.png}
+%%   \end{center}
+%% \end{frame}
 
 \begin{frame}[fragile]\frametitle{Testing within-S effects}
   \begin{itemize}
+  \item but up to now there is no information about the within effect structure
   \item for repeated measurement design we need to specify the intra-subject design
-  \item  structure  for  within-S  effects is specified through the arguments \texttt{idata} and \texttt{idesign}
+  \item structure  for  within-S  effects is specified through the arguments \texttt{idata} and \texttt{idesign}
   \item we need to contruct a time variable for the different measurement times
   \end{itemize}\scriptsize
 \begin{verbatim}
@@ -335,10 +389,134 @@ Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’
 \end{verbatim}
 \end{frame}
 
-\begin{frame}[fragile,allowframebreaks]\frametitle{Add between-S effects}
+
+\begin{frame}[fragile]\frametitle{Test Statistics}
+  \begin{itemize}
+  \item using the Wilks Statistic instead of the default (Pillai)
+  \end{itemize}\scriptsize
+\begin{verbatim}
+  > (av2 <- Anova(mod, test="Wilks", idata = idata, idesign = ~time))
+  Note: model has only an intercept; equivalent type-III tests substituted.
+
+  Type III Repeated Measures MANOVA Tests: Wilks test statistic
+  Df test stat approx F num Df den Df    Pr(>F)    
+  (Intercept)  1  0.004388   3176.8      1     14 < 2.2e-16 ***
+  time         1  0.044335     43.1      5     10 1.899e-06 ***
+  ---
+  Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+\end{verbatim}
+\end{frame}
+
+
+\begin{frame}[fragile]\frametitle{The 4 Test Statistics}
+  \begin{itemize}
+  \item extract all test statistics
+  \end{itemize}\scriptsize
+\begin{verbatim}
+> source("functions.r")
+> get.p.vals.all(av2)
+                   Df    test stat  approx F num Df den Df       Pr(>F)
+(Intercept) Pillai  1 9.956124e-01 3176.8006      1     14 6.569937e-18
+(Intercept) Wilks   1 4.387614e-03 3176.8006      1     14 6.569937e-18
+(Intercept) HL      1 2.269143e+02 3176.8006      1     14 6.569937e-18
+(Intercept) Roy     1 2.269143e+02 3176.8006      1     14 6.569937e-18
+time Pillai         1 9.556647e-01   43.1108      5     10 1.899089e-06
+time Wilks          1 4.433528e-02   43.1108      5     10 1.899089e-06
+time HL             1 2.155540e+01   43.1108      5     10 1.899089e-06
+time Roy            1 2.155540e+01   43.1108      5     10 1.899089e-06
+\end{verbatim}
+\end{frame}
+
+
+\begin{frame}[fragile, allowframebreaks]\frametitle{The 4 Test Statistics}
+  \begin{itemize}
+  \item when $H_0$ is true (i.e. $\mathbf{\mu_1} = \mathbf{\mu_1} = \ldots =  \mathbf{\mu_k}$) all four MANOVA test statistics have the same type I error rate
+  \item when $H_0$ is false, the four tests have different probabilities of rejection
+  \item relative powers of the four tests depend on the configuration of the mean vectors in the $s$-dimensional space, where $s=\min(p,\nu_H)$
+  \item indication about this configuration is given by the eigenvalues of $\mathbb{E}^{-1}\mathbb{H}$
+  \end{itemize}\scriptsize
+\end{frame}
+
+\begin{frame}[fragile]\frametitle{The 4 Test Statistics}\scriptsize
+\begin{verbatim}
+> source("functions.r")
+> get.p.vals.all(av2)
+                   Df    test stat  approx F num Df den Df       Pr(>F)
+(Intercept) Pillai  1 9.956124e-01 3176.8006      1     14 6.569937e-18
+(Intercept) Wilks   1 4.387614e-03 3176.8006      1     14 6.569937e-18
+(Intercept) HL      1 2.269143e+02 3176.8006      1     14 6.569937e-18
+(Intercept) Roy     1 2.269143e+02 3176.8006      1     14 6.569937e-18
+time Pillai         1 9.556647e-01   43.1108      5     10 1.899089e-06
+time Wilks          1 4.433528e-02   43.1108      5     10 1.899089e-06
+time HL             1 2.155540e+01   43.1108      5     10 1.899089e-06
+time Roy            1 2.155540e+01   43.1108      5     10 1.899089e-06
+\end{verbatim}
+\end{frame}
+
+
+\begin{frame}[fragile,allowframebreaks]\frametitle{The 4 Test Statistics}
+    \begin{itemize}
+    \item if one eigenvalue is large and the others are small (collinear mean vectors) Roy is the most powerful (in terms of power: Roy > LH > Wilk > Pillai)
+    \item intermediate between collinear and diffuse: Pillai > Wilk > LH > Roy
+    \item Pillai, Wilk, LH are robust against skewness
+    \item Pillai is better in presence of heterogeneity of covariance matrices
+    \item Pillai in most cases the best choice (but performs not well in case of collinearity)
+    \item Wilks not far behind but more sensible in case of severe heterogeneity of covariance matrices
+    \item nowadays software programs calculate all of them and most of the times they lead to the same conclusions, in case of conflicting conclusions examination of eigenvalues and covariance matrices is recommended
+    \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]\frametitle{The 4 Test Statistics}
+  \begin{itemize}
+  \item calculate the eigenvalues
+  \end{itemize}\scriptsize
+\begin{verbatim}
+> Re(eigen(solve(av$SSPE) %*% av$SSP[[1]])$values)
+[1]  8.941938e+02 -7.835860e-14 -7.835860e-14  2.256895e-13  2.256895e-13
+[6]  1.929296e-14
+> Re(eigen(solve(av2.mod2$SSPE$time) %*% av2.mod2$SSP$time)$values)
+[1]  2.476092e+01 -7.105427e-15 -1.958341e-15 -1.958341e-15  2.272995e-17
+\end{verbatim}
+\end{frame}
+
+
+\begin{frame}[fragile]\frametitle{Add between-S effects}
   \begin{itemize}
   \item now add the group term to the model (Dosef)
-  \end{itemize}\tiny
+  \item design:
+  \end{itemize}\scriptsize
+\end{frame}
+
+\begin{frame}[fragile]\frametitle{Add between-S effects}
+  \begin{itemize}
+  \item design:
+  \end{itemize}\scriptsize
+  \begin{center}
+    \begin{tabular}{c c c c c c c}
+      & & \multicolumn{5}{c}{Factor A (Repeated Measures)} \\ \hline
+Factor B & Subjects & $A_1$ & $A_2$ & $\cdots$ & $A_p$ & \\
+$B_1$ & $S_{11}$ & $( y_{111}$ & $y_{112}$ & $\cdots$ & $y_{11p} )$ & = $\mathbf{y^t_{11}}$ \\
+      & $S_{12}$ & $( y_{121}$ & $y_{122}$ & $\cdots$ & $y_{12p} )$ & = $\mathbf{y^t_{12}}$ \\
+      & $S_{13}$ & $( y_{131}$ & $y_{132}$ & $\cdots$ & $y_{13p} )$ & = $\mathbf{y^t_{13}}$ \\
+      & $\vdots$ & $\vdots$ & $\vdots$ &  & $ \vdots$ & $ \vdots $ \\
+      & $S_{1n}$ & $( y_{2n1}$ & $y_{2n2}$ & $\cdots$ & $y_{2np} )$ & = $\mathbf{y^t_{2n}}$ \\
+$B_2$ & $S_{21}$ & $( y_{211}$ & $y_{212}$ & $\cdots$ & $y_{21p} )$ & = $\mathbf{y^t_{21}}$ \\
+      & $S_{22}$ & $( y_{221}$ & $y_{222}$ & $\cdots$ & $y_{22p} )$ & = $\mathbf{y^t_{22}}$ \\
+      & $S_{23}$ & $( y_{231}$ & $y_{232}$ & $\cdots$ & $y_{23p} )$ & = $\mathbf{y^t_{23}}$ \\
+      & $\vdots$ & $\vdots$ & $\vdots$ &  & $ \vdots$ o& $ \vdots $ \\
+      & $S_{2n}$ & $( y_{2n1}$ & $y_{2n2}$ & $\cdots$ & $y_{2np} )$ & = $\mathbf{y^t_{2n}}$ \\
+$\vdots$  & $\vdots$ & $\vdots$ & $\vdots$ &  & $ \vdots$ & $ \vdots $ \\
+$B_k$ & $S_{k1}$ & $( y_{k11}$ & $y_{k12}$ & $\cdots$ & $y_{k1p} )$ & = $\mathbf{y^t_{k1}}$ \\
+      & $S_{k2}$ & $( y_{k21}$ & $y_{k22}$ & $\cdots$ & $y_{k2p} )$ & = $\mathbf{y^t_{k2}}$ \\
+      & $S_{k3}$ & $( y_{k31}$ & $y_{k32}$ & $\cdots$ & $y_{k3p} )$ & = $\mathbf{y^t_{k3}}$ \\
+      & $\vdots$ & $\vdots$ & $\vdots$ &  & $ \vdots$ & $ \vdots $ \\
+      & $S_{kn}$ & $( y_{kn1}$ & $y_{kn2}$ & $\cdots$ & $y_{knp} )$ & = $\mathbf{y^t_{kn}}$ \\
+    \end{tabular}
+  \end{center}
+\end{frame}
+
+
+\begin{frame}[fragile,allowframebreaks]\frametitle{Add between-S effects}\scriptsize
 \begin{verbatim}
 > (mod2 <- lm(cbind(X1,X3,X4,X5,X6,X7) ~ Dosef,data=guinea))
 
@@ -365,6 +543,32 @@ Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’
 \end{verbatim}
 \end{frame}
 
+\begin{frame}[fragile]\frametitle{MANOVA Tests}\scriptsize
+\begin{verbatim}
+> get.p.vals.all(av2.mod2)
+                   Df    test stat    approx F num Df den Df       Pr(>F)
+(Intercept) Pillai  1 9.962663e-01 3201.999302      1     12 6.120979e-16
+(Intercept) Wilks   1 3.733666e-03 3201.999302      1     12 6.120979e-16
+(Intercept) HL      1 2.668333e+02 3201.999302      1     12 6.120979e-16
+(Intercept) Roy     1 2.668333e+02 3201.999302      1     12 6.120979e-16
+Dosef Pillai        2 1.496026e-01    1.055525      2     12 3.782088e-01
+Dosef Wilks         2 8.503974e-01    1.055525      2     12 3.782088e-01
+Dosef HL            2 1.759208e-01    1.055525      2     12 3.782088e-01
+Dosef Roy           2 1.759208e-01    1.055525      2     12 3.782088e-01
+time Pillai         1 9.611815e-01   39.617478      5      8 1.954259e-05
+time Wilks          1 3.881848e-02   39.617478      5      8 1.954259e-05
+time HL             1 2.476092e+01   39.617478      5      8 1.954259e-05
+time Roy            1 2.476092e+01   39.617478      5      8 1.954259e-05
+Dosef:time Pillai   2 1.070585e+00    2.073405     10     18 8.556610e-02
+Dosef:time Wilks    2 1.790515e-01    2.181212     10     16 7.931593e-02
+Dosef:time HL       2 3.190768e+00    2.233537     10     14 8.241562e-02
+Dosef:time Roy      2 2.668246e+00    4.802843      5      9 2.045621e-02  
+
+\end{verbatim}
+
+\end{frame}
+
+
 \begin{frame}[allowframebreaks]\frametitle{Assumptions MANOVA}
   \begin{itemize}
   \item Normal Distribution: The dependent variable should be normally distributed within groups.  Overall, the F test is robust to non-normality, if the non-normality is caused by skewness rather than by outliers.
@@ -374,10 +578,11 @@ Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’
   \item Outliers: Like ANOVA, MANOVA is extremely sensitive to outliers.  Outliers may produce either a Type I or Type II error and give no indication as to which type of error is occurring in the analysis.  There are several programs available to test for univariate and multivariate outliers.
   \item Multicollinearity and Singularity: When there is high correlation between dependent variables, one dependent variable becomes a near-linear combination of the other dependent variables.  Under such circumstances, it would become statistically redundant and suspect to include both combinations.
   \end{itemize}
-
 \end{frame}
 
-\section{Mixed Models}
+
+
+\section{Mixed or Multilevel Models}
 \begin{frame}[fragile, allowframebreaks]\frametitle{Alternative Approach - Mixed Model}
   \begin{itemize}
   \item the mixed model looks very similar to ANOVA: $$Y_{ij} = \mu + \alpha_j + S_i + Error_{ij}$$
@@ -388,7 +593,27 @@ Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’
     \item $S_i$ are random effects have normal distribution with zero mean
     \item $E_{ij}$ are normally distributed with mean zero (as usual)
     \end{itemize}
-  \end{itemize}\scriptsize
+  \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile, allowframebreaks]\frametitle{Alternative Approach - Mixed Model}
+  \begin{itemize}
+  \item this also can be written as follows:
+    \begin{itemize}
+    \item $Y_{ij} = [\pi_{0i} + \pi_{2i} \cdot \mathrm{TIME}_{ij}] + [\epsilon_{ij}]$ (structural part + stochastic part)
+    \item $Y_{ij}$ is the value of subject $i$ at time $j$ as a linear function of $\mathrm{TIME}$
+    \item $\pi_{0i}$ and $\pi_{2i}$ are individual parameters that characterize its shape for the $i$th subject and where 
+      $$\pi_{0i} = \gamma_{00} + \gamma_{01}\mathrm{X}_i + \xi_{0i}$$ and
+      $$\pi_{1i} = \gamma_{10} + \gamma_{11}\mathrm{X}_i + \xi_{1i}$$ where
+    \item $\gamma_{00}$ and $\gamma_{10}$ the level-2 intercepts, represent the population average initial status and rate of change where $\mathrm{X}=0$ 
+    \item the level-2 slopes $\gamma_{01}$ and $\gamma_{11}$ represent the treatment effect $\mathrm{X}$ on the intercept and the slope respectively
+    \item $\xi_{0i}$ and $\xi_{1i}$, the level-2 residuals represent those portions of initial status or rate of change that are unexplained at level-2, they represent deviations of the individual change trajectories around their respective group average trends
+    \item $\xi_{0i}$ and $\xi_{1i}$ are assumed to be independently draw from a bivariate normal distribution with mean 0 and variances $\sigma_0^2$ and $\sigma_1^2$
+    \end{itemize}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile, allowframebreaks]\frametitle{Alternative Approach - Mixed Model}\scriptsize
 \begin{verbatim}
 > dl$variable <- factor(dl$variable)
 > require(nlme)
@@ -531,3 +756,140 @@ Linear Hypotheses:
 
 
 
+\begin{frame}\frametitle{Exercises}
+  \begin{enumerate}
+  \item try to set up an unconditional means model using lme or lmer from the respective package.
+  \item Extract the coefficients using \texttt{coef()} and interpret the results.
+  \item add time as fixed effect.
+  \item add time as random effect. Again: extract the coefficients, interpret.
+  \item add the group variable as factor, do an posthoc test
+  \end{enumerate}
+\end{frame}
+
+
+\begin{frame}[allowframebreaks, fragile]\frametitle{Solutions}
+  \begin{enumerate}
+  \item try to set up an unconditional means model using lme or lmer from the respective package.\scriptsize
+\begin{verbatim}
+> mod.0 <- lmer(value ~ 1 + (1 | Animal ), data = dl)
+
+\end{verbatim}
+\normalsize
+  \item Extract the coefficients using \texttt{coef()} and interpret the results.\scriptsize
+\begin{verbatim}
+> coef(mod.0)
+$Animal
+   (Intercept)
+1     496.1230
+2     560.5914
+3     558.9076
+4     567.8080
+5     540.0241
+6     553.9762
+7     525.5909
+8     573.2205
+9     604.2520
+10    585.9699
+11    588.8565
+12    559.8698
+13    551.5707
+14    585.3685
+15    534.3711
+
+attr(,"class")
+[1] "coef.mer"  
+  
+\end{verbatim}
+\normalsize
+  \item add time as fixed effect.\scriptsize
+\begin{verbatim}
+> mod.1 <- lmer(value ~ variable + (1 | Animal ), data = dl)
+> coef(mod.1)
+$Animal
+   (Intercept) variable
+1     394.8259 19.40286
+2     476.9201 19.40286
+3     474.7759 19.40286
+4     486.1098 19.40286
+5     450.7296 19.40286
+6     468.4963 19.40286
+7     432.3503 19.40286
+8     493.0020 19.40286
+9     532.5175 19.40286
+10    509.2371 19.40286
+11    512.9129 19.40286
+12    476.0012 19.40286
+13    465.4331 19.40286
+14    508.4713 19.40286
+15    443.5311 19.40286
+\end{verbatim}
+\normalsize
+  \item add time as random effect. Again: extract the coefficients, interpret.\scriptsize
+\begin{verbatim}
+> mod.2 <- lmer(value ~ variable + (1 + variable | Animal ), data = dl)
+> coef(mod.2)
+$Animal
+   (Intercept)  variable
+1     452.6571  4.989677
+2     475.9532 19.079395
+3     474.2833 20.463988
+4     478.1603 21.318140
+5     468.0379 15.382203
+6     473.9412 17.008690
+7     462.0846 13.445867
+8     480.0258 22.650268
+9     491.3526 29.244908
+10    484.4619 25.718884
+11    485.6489 26.112158
+12    475.6310 19.023129
+13    472.0510 18.168807
+14    485.1363 24.115063
+15    465.8891 14.321680
+
+attr(,"class")
+[1] "coef.mer"  
+\end{verbatim}
+\normalsize
+  \item add the group variable as factor, do an posthoc test\scriptsize
+\begin{verbatim}
+> mod.3 <- lmer(value ~ variable + group + (1 + variable | Animal ), data = dl)
+> coef(mod.3)
+$Animal
+   (Intercept) variable   group1   group2
+1     448.2977  5.81501 10.60605 14.33476
+2     472.9694 19.59789 10.60605 14.33476
+3     465.2712 22.15993 10.60605 14.33476
+4     473.0687 22.24370 10.60605 14.33476
+5     461.8873 16.53096 10.60605 14.33476
+6     469.0268 15.91834 10.60605 14.33476
+7     447.5350 14.25275 10.60605 14.33476
+8     470.6132 22.42630 10.60605 14.33476
+9     483.2428 28.74823 10.60605 14.33476
+10    474.3565 25.62254 10.60605 14.33476
+11    475.0372 25.41345 10.60605 14.33476
+12    466.9784 17.95933 10.60605 14.33476
+13    459.9408 17.78472 10.60605 14.33476
+14    478.6720 22.60904 10.60605 14.33476
+15    453.7132 13.96066 10.60605 14.33476
+
+attr(,"class")
+[1] "coef.mer"
+> summary(glht(mod.3, linfct=mcp(group="Tukey")))
+
+	 Simultaneous Tests for General Linear Hypotheses
+
+Multiple Comparisons of Means: Tukey Contrasts
+
+
+Fit: lmer(formula = value ~ variable + group + (1 + variable | Animal), 
+    data = dl)
+
+Linear Hypotheses:
+           Estimate Std. Error z value Pr(>|z|)
+1 - 0 == 0   10.606     16.669   0.636    0.800
+2 - 0 == 0   14.335     16.669   0.860    0.666
+2 - 1 == 0    3.729     16.669   0.224    0.973
+(Adjusted p values reported -- single-step method)
+\end{verbatim}
+  \end{enumerate}
+\end{frame}

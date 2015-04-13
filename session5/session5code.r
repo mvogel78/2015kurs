@@ -29,8 +29,6 @@ t.test(data$TTime[data$Subject==1 & data$testid=="test2"] ~
        data$Stim.Type[data$Subject==1 & data$testid=="test2"])
 
 
-
-
 ## use the following code to do the test on every subset Subject
 ## and testid, try to figure what is happening in each step:
 
@@ -51,7 +49,9 @@ tmp.l <- lapply(data.l,function(x) {
         conf.upper = tob$conf.int[2],
         pval = tob$p.value,
         alternative = tob$alternative,
-        tob$method)})
+        tob$method)
+                                        #    rownames(tmp) <- paste(unique(x$Subject),unique(x$testid))
+return(tmp)})
 
 res <- Reduce(rbind,tmp.l)
 
@@ -101,6 +101,8 @@ tmp.l <- lapply(data.l,function(x) {
 res <- Reduce(rbind,tmp.l)
 
 require(grid)
+
+
 
 ggplot(res,aes(x=perc.corr,y=mean.group.1 - mean.group.2)) +
     geom_point() +
@@ -185,9 +187,12 @@ require(granovaGG)
 ## the data in the long form.
 data(arousal)
 datalong <- stack(arousal)
+datalong$A <- grepl("\\.A",datalong$ind)
+datalong$B <- grepl("\\.B",datalong$ind)
 
-## Do a anova analysis. Is there a difference at least 2 of the groups?
+## Do a anova analysis. Is there a difference at least 2 of the gddroups?
 m1 <- aov(values ~ ind, data = datalong)
+m1 <- aov(values ~ A * B, data = datalong)
 summary(m1)
 
 ## If indicated do a post-hoc test.
@@ -214,18 +219,19 @@ ggsave("img/statbin.png")
 
 ggplot(data,aes(x=EC1)) +
     geom_bar() +
-    stat_bin(geom="point",
-             colour="blue", size=40, vjust=1) +
+                 stat_bin(geom="point",
+             colour="blue", size=40, vjust=1)
     stat_bin(geom="text", aes(label=..count..),
-             colour="red", size=14, vjust=0.5)
+             colour="red", size=14, vjust=0.5) +
 
 
 ggplot(data,aes(x=EC1)) +
     geom_bar() +
     stat_bin(geom="point",
              colour="blue", size=40, vjust=1) +
-    stat_bin(aes(group=Stim.Type,label=..count..,),geom="text", 
-             colour="red", size=14, vjust=0.5,position = position_stack())
+    stat_bin(aes(colour=Stim.Type,label=..count..,),geom="text", 
+              size=14, vjust=0.5,position = position_stack()) +
+    scale_color_manual(values = c("white","green"))
 
 ### 2d variant
 ggplot(data,aes(x=EC1,y=factor(Subject))) +

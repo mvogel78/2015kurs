@@ -1,3 +1,4 @@
+setwd()
 xx <- readLines("BH2K.log")
 
 emptylines <- which(xx=="")
@@ -10,6 +11,8 @@ indices1 <- setdiff(start1:end1,emptylines)
 
 start2 <- emptylines[5] - 1
 indices2 <- setdiff(start2:length(xx),emptylines)
+
+d1 <- read.table(text = xx[4:393],fill = T,header=T)
 
 d1 <- read.table(text = xx[indices1],fill = T,header=T)
 d2 <- read.table(text = xx[indices2],fill = T,header=T)

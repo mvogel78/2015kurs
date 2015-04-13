@@ -29,7 +29,7 @@ get.p.vals <- function(x){
 
 
 
-get.p.vals <- function(x){
+get.p.vals.all <- function(x){
     test <- x$test
     repeated <- x$repeated
     ntests <- length(x$terms)

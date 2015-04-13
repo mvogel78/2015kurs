@@ -297,7 +297,6 @@ prop.table(table(res$pval < 0.05))
 
 ## Is there a tendency? What could be the next step?
 
-
 ## hypothesis: if the child tries to answer correctly it thinks about it 
 ## if it does not know the answer immediately. So the difference of
 ## TTime resp. correct/incorrect should be higher as the percentage of

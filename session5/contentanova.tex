@@ -625,3 +625,80 @@ F-statistic:  10.5 on 3 and 36 DF,  p-value: 4.173e-05
   \end{enumerate}
 \end{frame}
 
+\begin{frame}
+\frametitle{Rigid body dynamics}
+\tikzstyle{na} = [baseline=-.5ex]
+
+\begin{equation*}
+\vec{a}_p = \vec{a}_o+\frac{{}^bd^2}{dt^2}\vec{r} +
+        \tikz[baseline]{
+            \node[anchor=base] (t1)
+            {$ 2\vec{\omega}_{ib}\times\frac{{}^bd}{dt}\vec{r}$};
+        } +
+        \tikz[baseline]{
+            \node[ellipse,anchor=base,path fading=fade inside] (t2)
+            {$\vec{\alpha}_{ib}\times\vec{r}$};
+        } +
+        \tikz[baseline]{
+            \node[fill=green!20,anchor=base] (t3)
+            {$\vec{\omega}_{ib}\times(\vec{\omega}_{ib}\times\vec{r})$};
+        }
+\end{equation*}
+
+\begin{tikzpicture}[overlay]
+\path[clip] (current page.north west) rectangle (current page.south east);
+\path<2>[fill=black,even odd rule,path fading=fade inside]
+    (t1) circle (10cm) (t1) circle (1cm);
+
+\path<3>[fill=black,even odd rule,path fading=fade inside]
+    (t2) circle (10cm) (t2) circle (1cm);     
+\end{tikzpicture}
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Rigid body dynamics 2}
+
+\tikzstyle{na} = [baseline=-.5ex]
+
+\begin{itemize}[<+-| alert@+>]
+    \item Coriolis acceleration
+        \tikz[na] \node[coordinate] (n1) {};
+\end{itemize}
+
+% Below we mix an ordinary equation with TikZ nodes. Note that we have to
+% adjust the baseline of the nodes to get proper alignment with the rest of
+% the equation.
+\begin{equation*}
+\vec{a}_p = \vec{a}_o+\frac{{}^bd^2}{dt^2}\vec{r} +
+        \tikz[baseline]{
+            \node[fill=blue!20,anchor=base] (t4)
+            {$ 2\vec{\omega}_{ib}\times\frac{{}^bd}{dt}\vec{r}$};
+        } +
+        \tikz[baseline]{
+            \node[fill=red!20, ellipse,anchor=base] (t5)
+            {$\vec{\alpha}_{ib}\times\vec{r}$};
+        } +
+        \tikz[baseline]{
+            \node[fill=green!20,anchor=base] (t6)
+            {$\vec{\omega}_{ib}\times(\vec{\omega}_{ib}\times\vec{r})$};
+        }
+\end{equation*}
+
+\begin{itemize}[<+-| alert@+>]
+    \item Transversal acceleration
+        \tikz[na]\node [coordinate] (n2) {};
+    \item Centripetal acceleration
+        \tikz[na]\node [coordinate] (n3) {};
+\end{itemize}
+
+% Now it's time to draw some edges between the global nodes. Note that we
+% have to apply the 'overlay' style.
+\begin{tikzpicture}[overlay]
+        \path[->]<1-> (n1) edge [bend left] (t4);
+        \path[->]<2-> (n2) edge [bend right] (t5);
+        \path[->]<3-> (n3) edge [out=0, in=-90] (t6);
+\end{tikzpicture}
+\end{frame}
+
+
